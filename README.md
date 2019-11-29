@@ -20,16 +20,16 @@ Usage:
 
 Options:
 
-	-f <filename>	Sequence file. fasta/q file with sequences or
+   -f <filename>	Sequence file. fasta/q file with sequences or
 	  		sequencing reads. Can be gziped. provide "-" if
 	  		reading from stdin. If using sequencing data eg.
 	  		illumina reads, provide the -C flag to use canonical
 	  		form.
 
-	-s <filename>	Spaced kmer file. Binary file containing the masks
+   -s <filename>	Spaced kmer file. Binary file containing the masks
 	  		to be used. Refer to manual for detailed documentation.
 
-	-C 		Canonical mode. Lexicographically smallest kmer is counted.
+   -C 		        Canonical mode. Lexicographically smallest kmer is counted.
 	  		Set this flag when analyzing sequencing reads.
 
-	-h 		This help  message.
+   -h 		        This help  message.
