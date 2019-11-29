@@ -55,8 +55,13 @@ Toolset for vectorizing sequence data via spaced kmers
 
 # spaced kmer masks and how to comute them
   A core concept of JellyBelly is the use of a "mask" to only consider specific positions of a kmer. For example given the following kmer of length 10:
+  
                                                    ACGGTGCAAT
+						   
   and the following mask:
+  
                                                    1001100001
+						   
   The corresponding spaced kmer will be:
+  
                                                    A  GT    T == AGTT
