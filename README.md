@@ -37,7 +37,18 @@ Toolset for vectorizing sequence data via spaced kmers
     -s <filename>	Spaced kmer file. Binary file containing the masks
 	  		to be used. Refer to manual for detailed documentation.
 
-    -C 		        Canonical mode. Lexicographically smallest kmer is counted.
+    -C 		       Canonical mode. Lexicographically smallest kmer is counted.
 	  		Set this flag when analyzing sequencing reads.
 
     -h 		        This help  message.
+
+# Usage
+  JellyBelly can be executed on any type of DNA nucleotide data. There is only one thing to consider. If you are runing JellyBelly on sequencing reads, make shure to set the -C flag. This will have a two fold efect:
+  
+  1. The entire sequencing library will be encoded in a single spaced kmer vector.
+  2. Only lexicographically smallest kmers will be computed. Reads coming from random fragments can be from either the forward or reverse strand.
+  
+  If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector you will have to concatenate them. I will soon add another option for computing a single vector from a set of sequences.
+  
+  JellyBelly will output spaced kmer vectors to stdout. Each value in the output vector is a scaled spaced kmer count. I will add another option for raw output. Kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
+
