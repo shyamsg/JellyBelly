@@ -75,3 +75,17 @@ create_spaces <kmer length> <smer length>
 This will create a .bin file. This is a binary file that contains the entropic masks. This file should be used as the -s option for JellyBelly.
 
 JellyBelly is hardcoded to use the first mask in the .bin file as of now. Options will be added to make this costumizable.
+
+# Utilities
+
+python/*.py
+
+Series of helper python scripts for ploting PCA and UMAP. You will need numpy, sklearn, plotly, and colorlover. You can install these with:
+
+pip install numpy, sklearn, plotly, and colorlover
+
+This scripts plot html file that you can open and interact with in a web browser.
+
+build/distMatrix
+
+This is a small C program that takes spaced kmer vectors and computes all pairwise euclidean distances.
