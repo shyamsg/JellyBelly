@@ -40,4 +40,4 @@ Toolset for vectorizing sequence data via spaced kmers
     -C 		        Canonical mode. Lexicographically smallest kmer is counted.
 	  		Set this flag when analyzing sequencing reads.
 
-   -h 		        This help  message.
+    -h 		        This help  message.
