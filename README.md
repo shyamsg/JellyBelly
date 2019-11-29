@@ -5,18 +5,23 @@ Toolset for vectorizing sequence data via spaced kmers
 
 # Dependencies
   JellyBelly has no mayor dependencies other than zlib.
-  JellyBelly uses (klib)[https://github.com/attractivechaos/klib] (included in this repo) for handling sequence data.
+  JellyBelly uses [klib][https://github.com/attractivechaos/klib] (included in this repo) for handling sequence data.
   JellyBelly uses cmake and make for compilation
 
 # get and compile
   git clone https://github.com/7PintsOfCherryGarcia/JellyBelly.git
+  
   cd JellyBelly/build
+  
   cmake ..
+  
   make
 
+
 # Run
+
 Usage:
-	JellyBelly [options] -f <sequence file> -s <spacedkmer file>
+	 JellyBelly [options] -f <sequence file> -s <spacedkmer file>
 
 Options:
 
