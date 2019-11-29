@@ -53,7 +53,7 @@ Toolset for vectorizing sequence data via spaced kmers
   JellyBelly will output spaced kmer vectors to stdout. Each value in the output vector is a scaled spaced kmer count. I will add another option for raw output. Kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
 
 
-# spaced kmer masks and how to comute them
+# spaced kmer file and how to compute them
   A core concept of JellyBelly is the use of a "mask" to only consider specific positions of a kmer. For example given the following kmer of length 10:
   
                                                    ACGGTGCAAT
@@ -65,3 +65,13 @@ Toolset for vectorizing sequence data via spaced kmers
   The corresponding spaced kmer will be:
   
                                                    A  GT    T == AGTT
+
+Brieafly, given a kmer size K and a spaced kmer size S, there are S choose K different ways of selecting S positions out of a kmer of length K. JellyBelly includes another program to compute these masks called create_spaces. create_spaces will do a brute force search of all possible mask configurations. Subsequently, only the most entropic(dissorderly) masks are kept.
+
+To create a spaced kmer file simply run create_spaces with your desired kmer size and spaced kmer file.
+
+create_spaces <kmer length> <smer length>
+	
+This will create a .bin file. This is a binary file that contains the entropic masks. This file should be used as the -s option for JellyBelly.
+
+JellyBelly is hardcoded to use the first mask in the .bin file as of now. Options will be added to make this costumizable.
