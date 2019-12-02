@@ -11,13 +11,10 @@ Toolset for vectorizing sequence data via spaced kmers
   JellyBelly uses cmake and make for compilation
 
 # get and compile
-  git clone https://github.com/7PintsOfCherryGarcia/JellyBelly.git
-  
-  cd JellyBelly/build
-  
-  cmake ..
-  
-  make
+    git clone --recursive https://github.com/7PintsOfCherryGarcia/JellyBelly.git
+    cd JellyBelly/build
+    cmake ..
+    make
 
 
 # Run
