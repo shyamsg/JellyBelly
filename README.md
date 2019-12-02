@@ -67,7 +67,7 @@ Brieafly, given a kmer size K and a spaced kmer size S, there are S choose K dif
 
 To create a spaced kmer file simply run create_spaces with your desired kmer size and spaced kmer file.
 
-create_spaces <kmer length> <smer length>
+    create_spaces <kmer length> <smer length>
 	
 This will create a .bin file. This is a binary file that contains the entropic masks. This file should be used as the -s option for JellyBelly.
 
