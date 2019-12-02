@@ -34,7 +34,7 @@ Toolset for vectorizing sequence data via spaced kmers
     -s <filename>	Spaced kmer file. Binary file containing the masks
 	  		to be used. Refer to manual for detailed documentation.
 
-    -C 		 Canonical mode. Lexicographically smallest kmer is counted.
+    -C 		Canonical mode. Lexicographically smallest kmer is counted.
 	  		Set this flag when analyzing sequencing reads.
 
     -h 		        This help  message.
