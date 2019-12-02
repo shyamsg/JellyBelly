@@ -10,7 +10,7 @@ Toolset for vectorizing sequence data via spaced kmers
   
   JellyBelly uses cmake and make for compilation
 
-# get and compile
+# Get and compile
     git clone --recursive https://github.com/7PintsOfCherryGarcia/JellyBelly.git
     cd JellyBelly/build
     cmake ..
@@ -34,7 +34,7 @@ Toolset for vectorizing sequence data via spaced kmers
     -s <filename>	Spaced kmer file. Binary file containing the masks
 	  		to be used. Refer to manual for detailed documentation.
 
-    -C 		       Canonical mode. Lexicographically smallest kmer is counted.
+    -C 		   Canonical mode. Lexicographically smallest kmer is counted.
 	  		Set this flag when analyzing sequencing reads.
 
     -h 		        This help  message.
