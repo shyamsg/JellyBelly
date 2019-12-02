@@ -82,9 +82,9 @@ python/\*.py
 
 Series of helper python scripts for ploting PCA and UMAP. You will need numpy, sklearn, plotly, and colorlover. You can install these with:
 
-pip install numpy, sklearn, plotly, and colorlover
+pip install numpy sklearn plotly colorlover
 
-This scripts plot html file that you can open and interact with in a web browser.
+These scripts plot html file that you can open and interact with in a web browser.
 
 build/distMatrix
 
