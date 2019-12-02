@@ -54,7 +54,8 @@ Toolset for vectorizing sequence data via spaced kmers
   output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts depends on the length of the spaced kmer and is equal to 4^S where S is the length of the spaced kmer.
   
   output.txt
-    0.245	0.014	0.547	...	0.436
+    
+    0.245	0.014	0.547	...    0.436
   
   If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector you will have to concatenate them. I will soon add another option for computing a single vector from a set of sequences.
   
