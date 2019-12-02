@@ -78,7 +78,7 @@ JellyBelly is hardcoded to use the first mask in the .bin file as of now. Option
 
 # Utilities
 
-python/*.py
+python/\*.py
 
 Series of helper python scripts for ploting PCA and UMAP. You will need numpy, sklearn, plotly, and colorlover. You can install these with:
 
