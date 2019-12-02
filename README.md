@@ -1,14 +1,16 @@
 # JellyBelly
 Toolset for vectorizing sequence data via spaced kmers
 
-# If you are here because of my talk at the embl PhD symposium I promise to push JellyBelly's code and manual very soon. :)
+# JellyBelly is a new project that will be in constant change. This master branch will always contain a working version. If you want to follow the latest changes and new functionality, be sure to add the "dev" branch. The dev branch will probably be a huge mess.
+
+
 
 # Dependencies
   JellyBelly has no mayor dependencies other than zlib.
   
-  JellyBelly uses [klib](https://github.com/attractivechaos/klib) (included in this repo) for handling sequence data.
+  JellyBelly uses [klib](https://github.com/attractivechaos/klib) (included in this repo) for handling sequence data and hashing of kmer sequences.
   
-  JellyBelly uses cmake and make for compilation
+  JellyBelly uses cmake and make for compilation.
 
 # Get and compile
     git clone --recursive https://github.com/7PintsOfCherryGarcia/JellyBelly.git
@@ -44,6 +46,15 @@ Toolset for vectorizing sequence data via spaced kmers
   
   1. The entire sequencing library will be encoded in a single spaced kmer vector.
   2. Only lexicographically smallest kmers will be computed. Reads coming from random fragments can be from either the forward or reverse strand.
+  
+  Assuming the sequencing library "my_seq.fq.gz", and the spaced kmer file "SpacedKmer_K10_S5.bin" you can run JellyBelly in the following way:
+    
+    JellyBelly -f my_seq.fq.gz -s SpacedKmer_K10_S5.bin -C > output.txt
+  
+  output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts depends on the length of the spaced kmer and is equal to 4^S where S is the length of the spaced kmer.
+  
+  output.txt
+    0.245	0.014	0.547	...	0.436
   
   If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector you will have to concatenate them. I will soon add another option for computing a single vector from a set of sequences.
   
