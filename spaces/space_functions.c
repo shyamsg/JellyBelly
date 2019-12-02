@@ -409,7 +409,7 @@ void writeSPacedKmers(char *space_list,
                       unsigned long smernum) {
 
     //Prepare filename
-    char name[99] = "SPacedKmers";
+    char name[99] = "SpacedKmers";
     char skmerlen[99];
     char ssmerlen[99];
     sprintf(skmerlen,"%d", kmerlen + 2);
