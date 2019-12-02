@@ -2,3 +2,8 @@ unused
 GPATH
 GRTAGS
 GTAGS
+CMakeFiles
+JellyBelly
+CMakeCache.txt
+cmake_install.cmake
+Makefile

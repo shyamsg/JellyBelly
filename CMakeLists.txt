@@ -7,12 +7,17 @@ project (JellyBelly)
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
 include_directories("${PROJECT_BINARY_DIR}"
-                    "klib")
+                    "klib"
+                    "spaces")
 
 # add the executable
 add_executable(JellyBelly src/main.c
                           src/bellyFun.c
                           src/bellyHash.c)
+
+add_executable(create_spaces spaces/create_spaces.c
+                             spaces/space_functions.c)
+
 
 find_library(ZLIB_LIBRARY
              NAMES z)
@@ -27,4 +32,7 @@ get_cmake_property(_variableNames VARIABLES)
 #endforeach()
 target_link_libraries(JellyBelly
                       ${ZLIB_LIBRARY}
+                      ${MLIB_LIBRARY})
+
+target_link_libraries(create_spaces
                       ${MLIB_LIBRARY})
