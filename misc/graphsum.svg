@@ -69,9 +69,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="627.76187"
-     inkscape:cy="404.26699"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="911.34133"
+     inkscape:cy="718.82206"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -149,63 +149,6 @@
          d="m 44.041008,272.36628 h 10.15624"
          style="fill:none;stroke:#000000;stroke-width:1.16499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="258.46545"
-       y="178.11972"
-       id="text12766"><tspan
-         sodipodi:role="line"
-         x="281.38498"
-         y="0"
-         id="tspan12764"
-         style="stroke-width:0.26458332"><tspan
-           x="258.46545"
-           y="178.11972"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
-           id="tspan12760">SK</tspan><tspan
-           x="281.38498"
-           y="178.11972"
-           style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
-           id="tspan12762">1</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="258.25616"
-       y="197.66266"
-       id="text12758"><tspan
-         sodipodi:role="line"
-         x="281.17569"
-         y="0"
-         id="tspan12756"
-         style="stroke-width:0.26458332"><tspan
-           x="258.25616"
-           y="197.66266"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
-           id="tspan12752">SK</tspan><tspan
-           x="281.17569"
-           y="197.66266"
-           style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
-           id="tspan12754">2</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="258.04688"
-       y="217.2056"
-       id="text12750"><tspan
-         sodipodi:role="line"
-         x="280.9664"
-         y="0"
-         id="tspan12748"
-         style="stroke-width:0.26458332"><tspan
-           x="258.04688"
-           y="217.2056"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
-           id="tspan12744">SK</tspan><tspan
-           x="280.9664"
-           y="217.2056"
-           style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
-           id="tspan12746">3</tspan></tspan></text>
     <circle
        style="opacity:1;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.16499996;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path989"
@@ -230,25 +173,6 @@
        cx="272.42877"
        cy="260.94421"
        r="2.6192415" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="257.00043"
-       y="279.87903"
-       id="text12742"><tspan
-         sodipodi:role="line"
-         x="279.91995"
-         y="0"
-         id="tspan12740"
-         style="stroke-width:0.26458332"><tspan
-           x="257.00043"
-           y="279.87903"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
-           id="tspan12736">SK</tspan><tspan
-           x="279.91995"
-           y="279.87903"
-           style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
-           id="tspan12738">n</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -493,9 +417,7 @@
          id="tspan1103-65-5-7"
          x="283.68707"
          y="135.94798"
-         style="font-size:9.87777805px;stroke:none;stroke-width:0.26499999;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53000002;stroke-dashoffset:0.07949999;stroke-opacity:1">size == 4S<tspan
-   style="font-size:64.99999762%;baseline-shift:super"
-   id="tspan9326" /></tspan></text>
+         style="font-size:9.87777805px;stroke:none;stroke-width:0.26499999;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53000002;stroke-dashoffset:0.07949999;stroke-opacity:1">size == 4</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26499999;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53000002;stroke-dashoffset:0.07949999;stroke-opacity:1"
@@ -512,5 +434,152 @@
        d="m 140.49375,209.68749 h 91.90277"
        id="path11968"
        inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:1.05833328px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26499999;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53000002;stroke-dashoffset:0.07949999;stroke-opacity:1"
+       x="330.93829"
+       y="129.49706"
+       id="text1105-7-2-4-0"><tspan
+         sodipodi:role="line"
+         id="tspan1103-65-5-7-7"
+         x="330.93829"
+         y="129.49706"
+         style="font-size:7.05555677px;stroke:none;stroke-width:0.26499999;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53000002;stroke-dashoffset:0.07949999;stroke-opacity:1">s</tspan></text>
+    <g
+       id="g12840"
+       transform="translate(-18.013829,110.84798)">
+      <text
+         id="text12766-8"
+         y="68.054993"
+         x="276.47928"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           id="tspan12764-6"
+           y="68.054993"
+           x="276.47928"
+           sodipodi:role="line"><tspan
+             id="tspan12760-8"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
+             y="68.054993"
+             x="276.47928">SK</tspan><tspan
+             id="tspan12762-8"
+             style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
+             y="68.054993"
+             x="299.3988" /></tspan></text>
+      <text
+         id="text12766-8-4"
+         y="71.787018"
+         x="298.23547"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-size:14.11111259px;stroke-width:0.26458332"
+           id="tspan12764-6-3"
+           y="71.787018"
+           x="298.23547"
+           sodipodi:role="line">1</tspan></text>
+    </g>
+    <g
+       transform="translate(-18.222829,130.39098)"
+       id="g12840-9">
+      <text
+         id="text12766-8-2"
+         y="68.054993"
+         x="276.47928"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           id="tspan12764-6-0"
+           y="68.054993"
+           x="276.47928"
+           sodipodi:role="line"><tspan
+             id="tspan12760-8-6"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
+             y="68.054993"
+             x="276.47928">SK</tspan><tspan
+             id="tspan12762-8-8"
+             style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
+             y="68.054993"
+             x="299.3988" /></tspan></text>
+      <text
+         id="text12766-8-4-9"
+         y="71.787018"
+         x="298.23547"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-size:14.11111259px;stroke-width:0.26458332"
+           id="tspan12764-6-3-2"
+           y="71.787018"
+           x="298.23547"
+           sodipodi:role="line">2</tspan></text>
+    </g>
+    <g
+       transform="translate(-18.222829,149.94217)"
+       id="g12840-6">
+      <text
+         id="text12766-8-6"
+         y="68.054993"
+         x="276.47928"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           id="tspan12764-6-4"
+           y="68.054993"
+           x="276.47928"
+           sodipodi:role="line"><tspan
+             id="tspan12760-8-9"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
+             y="68.054993"
+             x="276.47928">SK</tspan><tspan
+             id="tspan12762-8-5"
+             style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
+             y="68.054993"
+             x="299.3988" /></tspan></text>
+      <text
+         id="text12766-8-4-0"
+         y="71.787018"
+         x="298.23547"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-size:14.11111259px;stroke-width:0.26458332"
+           id="tspan12764-6-3-4"
+           y="71.787018"
+           x="298.23547"
+           sodipodi:role="line">3</tspan></text>
+    </g>
+    <g
+       transform="translate(-18.222829,212.60798)"
+       id="g12840-8">
+      <text
+         id="text12766-8-7"
+         y="68.054993"
+         x="276.47928"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           id="tspan12764-6-1"
+           y="68.054993"
+           x="276.47928"
+           sodipodi:role="line"><tspan
+             id="tspan12760-8-7"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.04999924px;font-family:'Courier 10 Pitch';-inkscape-font-specification:'Courier 10 Pitch';stroke-width:0.26458332"
+             y="68.054993"
+             x="276.47928">SK</tspan><tspan
+             id="tspan12762-8-2"
+             style="font-size:14.67555523px;baseline-shift:sub;stroke-width:0.26458332"
+             y="68.054993"
+             x="299.3988" /></tspan></text>
+      <text
+         id="text12766-8-4-7"
+         y="71.787018"
+         x="298.23547"
+         style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-size:14.11111259px;stroke-width:0.26458332"
+           id="tspan12764-6-3-22"
+           y="71.787018"
+           x="298.23547"
+           sodipodi:role="line">n</tspan></text>
+    </g>
   </g>
 </svg>
