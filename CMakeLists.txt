@@ -18,6 +18,7 @@ add_executable(JellyBelly src/main.c
 add_executable(create_spaces spaces/create_spaces.c
                              spaces/space_functions.c)
 
+add_executable(distMatrix utilities/distMatrix.c)
 
 find_library(ZLIB_LIBRARY
              NAMES z)
@@ -35,4 +36,7 @@ target_link_libraries(JellyBelly
                       ${MLIB_LIBRARY})
 
 target_link_libraries(create_spaces
+                      ${MLIB_LIBRARY})
+
+target_link_libraries(distMatrix
                       ${MLIB_LIBRARY})
