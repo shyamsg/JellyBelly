@@ -3,7 +3,9 @@ Toolset for vectorizing sequence data via spaced kmers
 
 # JellyBelly is a new project that will be in constant change. This master branch will always contain a working version. If you want to follow the latest changes and new functionality, be sure to add the "dev" branch. The dev branch will probably be a huge mess.
 
+# Graphic summary
 
+![graphsum](/misc/graphsum.svg)
 
 # Dependencies
   JellyBelly has no mayor dependencies other than zlib.
