@@ -100,3 +100,13 @@ These scripts plot html file that you can open and interact with in a web browse
 build/distMatrix
 
 This is a small C program that takes spaced kmer vectors and computes all pairwise euclidean distances.
+
+# Upcoming changes
+
+* Spaced kmer files
+    * Currewnt version of create_spaces keeps only the spaced kmer masks with maximum entropy. Future versions will keep all spaced kmer masks that a within a certain fraction of the most entropic one.
+    * JellyBelly uses only the first spaced kmer mask. Future versions will let the user choose which mask to use. This will require another utility program to list all the masks in a spaced kmer file.
+* Output of JellyBelly
+    * Currently JellyBelly outputs spaced kmer scaled counts in text format. Future versions will output this information in binary format to a filename specified as an option. Converting binary output to text output will be implemented separately.
+* JellyBelly's execution
+    * Currently JellyBelly has only one way of executing it. Future versions will introduce 'commands'. For example, there will be a comand to vectorize sequence data, another comand to print binary vector files, and another comand scale raw counts.
