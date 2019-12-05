@@ -119,7 +119,7 @@ build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euc
 
   python scripts require plotly, numpy, colorlover and sklearn. These can be installed with:
   
-    pip install plotly, numpy, colorlover, sklearn
+    pip install plotly numpy colorlover sklearn
 
   These scripts create html files that you can open and interact with in a web browser.
 
