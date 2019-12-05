@@ -97,17 +97,32 @@ JellyBelly is hardcoded to use the first mask in the .bin file as of now. Option
 
 # Utilities
 
-python/\*.py
+utility name | function
+------------ | --------
+python/compute_EUdist.py | Given two spaced kmer vectors, computes the eucledian distance between them
+python/create_PCAplot.py | Given a set of spaced kmer vectors and sample infomation, computes a PCA and plots a projection into the first two compionents
+python/create_UMAPplot.py| Given a set of spaced kmer vectors and sample information, computes a UMAP transformation and plots the first two axes
+build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euclidean distances and prints an nxn matrix with n being the number of vectors provided. The diagonal is filled with zeroes.
 
-Series of helper python scripts for ploting PCA and UMAP. You will need numpy, sklearn, plotly, and colorlover. You can install these with:
+## Instalation
 
-pip install numpy sklearn plotly colorlover
+  python scripts come as is.
+  build/distMatrix is built together with JellyBelly but can be recompiled with
+    
+    make distMatrix
+    
+## Run
 
-These scripts plot html file that you can open and interact with in a web browser.
+  Run these utilities without parameters to print help messages
+  
+## Dependencies
 
-build/distMatrix
+  python scripts require plotly, numpy, colorlover and sklearn. These can be installed with:
+  
+    pip install plotly, numpy, colorlover, sklearn
 
-This is a small C program that takes spaced kmer vectors and computes all pairwise euclidean distances.
+  These scripts create html files that you can open and interact with in a web browser.
+
 
 # Upcoming changes
 
@@ -118,3 +133,12 @@ This is a small C program that takes spaced kmer vectors and computes all pairwi
     * Currently JellyBelly outputs spaced kmer scaled counts in text format. Future versions will output this information in binary format to a filename specified as an option. Converting binary output to text output will be implemented separately.
 * JellyBelly's execution
     * Currently JellyBelly has only one way of executing it. Future versions will introduce 'commands'. For example, there will be a comand to vectorize sequence data, another comand to print binary vector files, and another comand scale raw counts.
+
+# Other stuff
+
+* protein sequences
+    * Currently not supported
+* Use of multiple threads
+    * The speed advantages of multithreading do not justify the resources I would have to invest in implementing it. Eventually this will be incorporated into JellyBelly
+* Use in windows
+    * No
