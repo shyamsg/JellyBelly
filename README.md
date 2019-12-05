@@ -44,24 +44,32 @@ Toolset for vectorizing sequence data via spaced kmers
     -h 		        This help  message.
 
 # Usage
-  JellyBelly can be executed on any type of DNA nucleotide data. There is only one thing to consider. If you are runing JellyBelly on sequencing reads, make shure to set the -C flag. This will have a two fold efect:
+
+## Input Data
+  JellyBelly can be executed on any type of DNA nucleotide data in the FASTA/FASTQ format. There is only **one** thing to consider. If you are runing JellyBelly on **sequencing reads**, make shure to set the **-C** flag. This will have a two fold efect:
   
   1. The entire sequencing library will be encoded in a single spaced kmer vector.
-  2. Only lexicographically smallest kmers will be computed. Reads coming from random fragments can be from either the forward or reverse strand.
+  1. Only lexicographically smallest kmers will be computed. Reads coming from random fragments can be from either the forward or reverse strand.
+  
+  For example:
   
   Assuming the sequencing library "my_seq.fq.gz", and the spaced kmer file "SpacedKmer_K10_S5.bin" you can run JellyBelly in the following way:
     
     JellyBelly -f my_seq.fq.gz -s SpacedKmer_K10_S5.bin -C > output.txt
   
-  output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts depends on the length of the spaced kmer and is equal to 4^S where S is the length of the spaced kmer.
+  output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts (number of spaced kmers) depends on the length of the number of ones in the spaced kmer mask and is equal to 4^S where S is the the number of ones in the mask.
+  
+  JellyBelly's output values are scaled spaced kmer counts ranging from 0 to 1 includisve. I will add another option for raw output (actual counts). Spaced kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
   
   output.txt
+  
+      1	  2	  3	  	4^S
     
     0.245	0.014	0.547	...    0.436
   
   If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector you will have to concatenate them. I will soon add another option for computing a single vector from a set of sequences.
   
-  JellyBelly will output spaced kmer vectors to stdout. Each value in the output vector is a scaled spaced kmer count. I will add another option for raw output. Kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
+  
 
 
 # spaced kmer file and how to compute them
