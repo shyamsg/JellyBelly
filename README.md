@@ -1,5 +1,6 @@
 # JellyBelly
-Toolset for vectorizing sequence data via spaced kmers
+
+##Toolset for vectorizing sequence data.
 
 # JellyBelly is a new project that will be in constant change. This master branch will always contain a working version. If you want to follow the latest changes and new functionality, be sure to add the "dev" branch. The dev branch will probably be a huge mess.
 
@@ -7,6 +8,12 @@ Toolset for vectorizing sequence data via spaced kmers
 
 ![graphsum](/misc/graphsum.svg)
 
+# What is JellyBelly?
+
+  JellyBelly is a tool to encode sequence data as vectors of constant length (See graphic summary). The main concept of JellyBelly is the **spaced kmer**. A spaced kmer is a sequence of length S derived from a sequence of length K with K > S where only a subset of the positions in sequence K are taken into account (see **spaced kmer file and how to compute them**). The positions that are considered to build sequence S are based on a mask. This mask consists of a string of 1's and 0's. Masks are always of length K and have S 1's. Only the positions with 1's in the mask are extracted from sequence K to build S.
+  
+  JellyBelly scans sequence data and extracts all spaced kmers given a mask, a kmer length and a spaced kmer length. JellyBelly then builds a vector of spaced kmer counts. These vectors can then be used to do sequence comparison via vector calculus.
+  
 # Dependencies
   JellyBelly has no mayor dependencies other than zlib.
   
@@ -142,3 +149,5 @@ build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euc
     * The speed advantages of multithreading do not justify the resources I would have to invest in implementing it. Eventually this will be incorporated into JellyBelly
 * Use in windows
     * No
+* I used this tool and don't know how to cite this work
+    * Me neither, not planning on writing a paper so github link should suffice. Alternatively you could cite a presentation I gave at the (EMBL PhD symposium)[http://phdsymposium.embl.org/] where I presented this work.
