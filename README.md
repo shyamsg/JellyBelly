@@ -150,4 +150,4 @@ build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euc
 * Use in windows
     * No
 * I used this tool and don't know how to cite this work
-    * Me neither, not planning on writing a paper so github link should suffice. Alternatively you could cite a presentation I gave at the (EMBL PhD symposium)[http://phdsymposium.embl.org/] where I presented this work.
+    * Me neither, not planning on writing a paper so github link should suffice. Alternatively you could cite a presentation I gave at the [EMBL PhD symposium](http://phdsymposium.embl.org/) where I presented this work.
