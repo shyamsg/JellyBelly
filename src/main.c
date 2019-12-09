@@ -70,6 +70,7 @@ int main(int argc, char **argv)
 
     // Run
     int ret = belly_start(fp, smer_file, opts);
+    fclose(smer_file);
     return(ret);
 }
 

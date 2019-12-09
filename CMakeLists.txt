@@ -13,7 +13,8 @@ include_directories("${PROJECT_BINARY_DIR}"
 # add the executable
 add_executable(JellyBelly src/main.c
                           src/bellyFun.c
-                          src/bellyHash.c)
+                          src/bellyHash.c
+                          src/bellyMisc.c)
 
 add_executable(create_spaces spaces/create_spaces.c
                              spaces/space_functions.c)

@@ -114,7 +114,7 @@ int randint(int max);
 
 
 //TODO Document
-unsigned int belly_hash_init(jellyhash smerhash, jellyinfo *info, SpKMER *smerlist);
+unsigned int belly_hash_init(jellyhash *smerhash, jellyinfo *info, SpKMER *smerlist);
 
 //TODO Document
 void belly_exit(gzFile fp,
