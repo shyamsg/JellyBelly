@@ -24,8 +24,12 @@ SOFTWARE.
 
 #include <stdio.h>
 #include "khash.h"
+
 #include "bellyFun.h"
 #include "bellyHash.h"
+
+
+
 
 void hash_declare(jellyhash *smerhash) {
     smerhash->h = kh_init(smer);

@@ -1,9 +1,9 @@
-#include <zlib.h>
 
 typedef struct {
     char *seqfilename;
     char *smerfilename;
     int mode;
+    int buffersize;
 } JellyOpts;
 
 void usage();

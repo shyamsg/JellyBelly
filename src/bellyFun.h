@@ -66,6 +66,7 @@ typedef struct {
     int smerlength;
     unsigned long int smernum;
     int *mask;
+    int buffersize;
 } jellyinfo;
 
 
@@ -130,7 +131,7 @@ void belly_fill_smer_list(SpKMER *smerlist, jellyinfo *info ,int idx, unsigned i
 
 unsigned long belly_extract_spaces(kseq_t *seq,
                                    jellyinfo *info,
-                                   jellyhash smerhash,
+                                   jellyhash *smerhash,
                                    SpKMER *smerlist,
                                    int mode);
 
@@ -138,10 +139,10 @@ unsigned long belly_extract_spaces(kseq_t *seq,
 unsigned long int belly_count(char *seq,
                               int l,
                               jellyinfo *info,
-                              jellyhash smerhash);
+                              jellyhash *smerhash);
 
 
-void belly_extract_vector(jellyhash smerhash,
+void belly_extract_vector(jellyhash *smerhash,
                           unsigned long vector_length,
                           SpKMER *smerlist,
                           unsigned int *vector);

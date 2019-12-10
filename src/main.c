@@ -93,6 +93,8 @@ void usage()
     fprintf(stderr,"\t  \t\tto be used. Refer to manual for detailed documentation.\n\n");
     fprintf(stderr,"\t-C \t\tCanonical mode. Lexicographically smallest kmer is ");
     fprintf(stderr,"counted.\n\t  \t\tSet this flag when analyzing sequencing reads.\n\n");
+    fprintf(stderr,"\t-b <int>\tNumber of spaced kmer vectors to keep in memory before\n");
+    fprintf(stderr,"\t  \t\twritting them to the outputfile.\n\n");
     fprintf(stderr,"\t-h \t\tThis help  message.\n\n");
     exit(1);
 }
@@ -106,8 +108,9 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
     opts->seqfilename = NULL;
     opts->smerfilename = NULL;
     opts->mode = 0;
+    opts->buffersize = 100;
     int elem;
-    while (( elem = getopt(argc, argv, "f:s:Ch") ) >= 0) {
+    while (( elem = getopt(argc, argv, "f:s:Chb:") ) >= 0) {
         switch(elem) {
         case 'f':
             opts->seqfilename = optarg;
@@ -118,6 +121,9 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
         case 'C':
             opts->mode = 1;
             break;
+        case 'b':
+            opts->buffersize = atoi(optarg);
+            break;
         case 'h':
             usage();
         }
@@ -125,6 +131,11 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
     if (!opts->seqfilename || !opts->smerfilename) {
         fprintf(stderr,"\t ERROR: Please provide a sequence file (-f) and\n");
         fprintf(stderr,"\t        a spaced kmer file file (-s)\n\n");
+        usage();
+    }
+
+    if (opts->buffersize <= 0) {
+        fprintf(stderr,"\tERROR: Please specify a buffersize >= 0\n");
         usage();
     }
     print_opts(*opts);
@@ -139,5 +150,6 @@ void print_opts(JellyOpts opts)
     fprintf(stderr,"\t sequence file: %s\n", opts.seqfilename);
     fprintf(stderr,"\t spaced kmer file: %s\n", opts.smerfilename);
     fprintf(stderr,"\t kmer mode: %d\n", opts.mode);
+    fprintf(stderr,"\t buffer size: %d\n", opts.buffersize);
 }
 

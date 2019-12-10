@@ -1,5 +1,6 @@
 #define BASES "ACGT"
 
+
 void hash_declare(jellyhash *smerhash);
 
 // Fill hash with all posible combinations of spaced kmers
