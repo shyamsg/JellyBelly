@@ -303,20 +303,17 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     int sequence_length;
     int n = 0;
     unsigned long int total_kmers = 0;
-
     unsigned int *hash_vector = malloc(hash_size*sizeof(unsigned int));
     if (!hash_vector) return 0;
-    /*Vector holding scaled spaced kmer values for input sequences. Hard coded to hold
-      10 sequences right now. As memory usage increases exponentially with spaced kmer
-      size, this is only practical vor short spaced kmers eg 10
-    */
-    float *scale_vector = malloc((hash_size*1)*sizeof(float));
+
+    //Vector holding scaled spaced kmer values for input sequences.
+    float *scale_vector = malloc((hash_size*info->buffersize)*sizeof(float));
     if (!scale_vector) return 0;
     //Index for scaled vector
     unsigned long int sv_idx = 0;
     unsigned long int numkmers = 0;
-    //Read sequences in loop
 
+    //Read sequences in loop
     while ((sequence_length = kseq_read(seq)) >= 0) {
 
         if (sequence_length < 0) {
