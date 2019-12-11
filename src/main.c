@@ -33,7 +33,8 @@ JetBelly - Extract and bin kmers from fasta sequences of fastq sequencing files
 #include <stdlib.h>
 #include <zlib.h>
 #include <string.h>
-
+#include <unistd.h>
+#include <poll.h>
 #include "main.h"
 
 
@@ -54,7 +55,12 @@ int main(int argc, char **argv)
     gzFile fp;
     // Read from stdin
     if (strcmp( opts.seqfilename, "-") == 0) {
-      opts.seqfilename = "/dev/stdin";
+        //TODO check stdin contains data
+        opts.seqfilename = "/dev/stdin";
+        if (check_stdin(opts.seqfilename) == 0) {
+            fprintf(stderr,"ERROR: -f - set but no data from stdin was detected.\n");
+            usage();
+        }
     }
     fp = gzopen(opts.seqfilename, "r");
     if (!fp) {
@@ -153,3 +159,17 @@ void print_opts(JellyOpts opts)
     fprintf(stderr,"\t buffer size: %d\n", opts.buffersize);
 }
 
+
+int check_stdin(char *filename) {
+    FILE *fp = fopen("/dev/stdin", "r");
+    if (!fp) return 0;
+    struct pollfd *fpoll;
+    fpoll = malloc(sizeof(fpoll));
+    fpoll[0].fd = fileno(fp);
+    fpoll[0].events = POLLIN;
+    fpoll[0].revents = 0;
+    int stdinpoll = poll(fpoll, 1, 100);
+    free(fpoll);
+    fclose(fp);
+    return stdinpoll;
+}
