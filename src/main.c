@@ -80,9 +80,6 @@ int main(int argc, char **argv)
 }
 
 
-/*
-
-*/
 void usage()
 {
     fprintf(stderr,"Usage:\n");
@@ -116,8 +113,11 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
     opts->outputfilename = NULL;
     opts->mode = 0;
     opts->buffersize = 100;
+    opts->omode = "w";
+    opts->scale = 1;
+    opts->seqmode = 0;
     int elem;
-    while (( elem = getopt(argc, argv, "f:s:Chb:o:") ) >= 0) {
+    while (( elem = getopt(argc, argv, "f:s:Chq:o:brl") ) >= 0) {
         switch(elem) {
         case 'f':
             opts->seqfilename = optarg;
@@ -128,11 +128,20 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
         case 'C':
             opts->mode = 1;
             break;
-        case 'b':
+        case 'q':
             opts->buffersize = atoi(optarg);
             break;
         case 'o':
             opts->outputfilename = optarg;
+            break;
+        case 'b':
+            opts->omode = "b";
+            break;
+        case 'r':
+            opts->scale = 0;
+            break;
+        case 'l':
+            opts->seqmode = 1;
             break;
         case 'h':
             usage();
@@ -156,11 +165,14 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
 
 void print_opts(JellyOpts opts)
 {
-    fprintf(stderr,"\t sequence file: %s\n", opts.seqfilename);
-    fprintf(stderr,"\t spaced kmer file: %s\n", opts.smerfilename);
-    fprintf(stderr,"\t output file: %s\n", opts.outputfilename);
-    fprintf(stderr,"\t kmer mode: %d\n", opts.mode);
-    fprintf(stderr,"\t buffer size: %d\n", opts.buffersize);
+    fprintf(stderr,"\t sequence file:\t\t%s\n", opts.seqfilename);
+    fprintf(stderr,"\t spaced kmer file:\t%s\n", opts.smerfilename);
+    fprintf(stderr,"\t output file:\t\t%s\n", opts.outputfilename);
+    fprintf(stderr,"\t kmer mode:\t\t%s\n", (opts.mode==0)?"non-canonical":"canonical");
+    fprintf(stderr,"\t buffer size:\t\t%d\n", opts.buffersize);
+    fprintf(stderr,"\t count mode:\t\t%s\n", (opts.seqmode==1)?"contig":"read");
+    fprintf(stderr,"\t output format:\t\t%s\n", (opts.omode=="w")?"text":"binary");
+    fprintf(stderr,"\t scaled output:\t\t%s\n", (opts.scale==1)?"scaled":"raw");
 }
 
 

@@ -5,6 +5,9 @@ typedef struct {
     char *outputfilename;
     int mode;
     int buffersize;
+    char *omode;
+    int scale;
+    int seqmode;
 } JellyOpts;
 
 void usage();

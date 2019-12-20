@@ -67,6 +67,7 @@ typedef struct {
     unsigned long int smernum;
     int *mask;
     int buffersize;
+    FILE *output;
 } jellyinfo;
 
 
@@ -90,10 +91,14 @@ typedef struct {
 
 
 //TODO Document
-int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts);
+int belly_start(gzFile fp,
+                FILE *smer_file,
+                JellyOpts opts);
 
 
-int belly_read_header(FILE *file, jellyinfo *info);
+int belly_read_header(FILE *file,
+                      jellyinfo *info);
+
 
 int check_zeros(char *zero_vector, int length);
 
@@ -121,7 +126,7 @@ unsigned int belly_hash_init(jellyhash *smerhash, jellyinfo *info, SpKMER *smerl
 void belly_exit(gzFile fp,
                 kseq_t *seq,
                 jellyhash smerhash,
-                jellyinfo info,
+                jellyinfo *info,
                 SpKMER *smerlist,
                 unsigned int hashsize);
 
@@ -133,7 +138,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
                                    jellyinfo *info,
                                    jellyhash *smerhash,
                                    SpKMER *smerlist,
-                                   int mode);
+                                   JellyOpts mode);
 
 
 unsigned long int belly_count(char *seq,
