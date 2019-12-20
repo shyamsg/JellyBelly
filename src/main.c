@@ -55,7 +55,6 @@ int main(int argc, char **argv)
     gzFile fp;
     // Read from stdin
     if (strcmp( opts.seqfilename, "-") == 0) {
-        //TODO check stdin contains data
         opts.seqfilename = "/dev/stdin";
         if (check_stdin(opts.seqfilename) == 0) {
             fprintf(stderr,"ERROR: -f - set but no data from stdin was detected.\n");
@@ -100,7 +99,8 @@ void usage()
     fprintf(stderr,"\t-C \t\tCanonical mode. Lexicographically smallest kmer is ");
     fprintf(stderr,"counted.\n\t  \t\tSet this flag when analyzing sequencing reads.\n\n");
     fprintf(stderr,"\t-b <int>\tNumber of spaced kmer vectors to keep in memory before\n");
-    fprintf(stderr,"\t  \t\twritting them to the outputfile.\n\n");
+    fprintf(stderr,"\t  \t\twritting them to the outputfile. (-b 100)\n\n");
+    fprintf(stderr,"\t-o <filename>\tOutput filename. (-o /dev/stdout)\n\n");
     fprintf(stderr,"\t-h \t\tThis help  message.\n\n");
     exit(1);
 }
@@ -113,10 +113,11 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
 {
     opts->seqfilename = NULL;
     opts->smerfilename = NULL;
+    opts->outputfilename = NULL;
     opts->mode = 0;
     opts->buffersize = 100;
     int elem;
-    while (( elem = getopt(argc, argv, "f:s:Chb:") ) >= 0) {
+    while (( elem = getopt(argc, argv, "f:s:Chb:o:") ) >= 0) {
         switch(elem) {
         case 'f':
             opts->seqfilename = optarg;
@@ -129,6 +130,9 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
             break;
         case 'b':
             opts->buffersize = atoi(optarg);
+            break;
+        case 'o':
+            opts->outputfilename = optarg;
             break;
         case 'h':
             usage();
@@ -144,23 +148,24 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
         fprintf(stderr,"\tERROR: Please specify a buffersize >= 0\n");
         usage();
     }
+
+    if (!opts->outputfilename) opts->outputfilename = "/dev/stdout";
     print_opts(*opts);
 }
 
 
-/*
-
-*/
 void print_opts(JellyOpts opts)
 {
     fprintf(stderr,"\t sequence file: %s\n", opts.seqfilename);
     fprintf(stderr,"\t spaced kmer file: %s\n", opts.smerfilename);
+    fprintf(stderr,"\t output file: %s\n", opts.outputfilename);
     fprintf(stderr,"\t kmer mode: %d\n", opts.mode);
     fprintf(stderr,"\t buffer size: %d\n", opts.buffersize);
 }
 
 
-int check_stdin(char *filename) {
+int check_stdin(char *filename)
+{
     FILE *fp = fopen("/dev/stdin", "r");
     if (!fp) return 0;
     struct pollfd *fpoll;

@@ -26,6 +26,7 @@ SOFTWARE.
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <errno.h>
 
 // Functions
 #include "bellyFun.h"
@@ -43,6 +44,15 @@ KSORT_INIT_GENERIC(int)
 int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
 {
     srand(time(NULL));
+    //Check for output file
+    FILE *output = fopen(opts.outputfilename, "w");
+    if (!output) {
+      fprintf(stderr, "ERROR: Could not open output file: %s.\n",
+              opts.outputfilename);
+      if (errno == 13) fprintf(stderr, "Permission denied\n");
+      return 1;
+    }
+
 
     jellyinfo info;
     info.kmer_seq = NULL;
@@ -80,7 +90,6 @@ int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
     belly_fill_smer_list(smerlist, &info, 0, &smer_idx);
     fprintf(stderr, "smer_index: %u\n", smer_idx);
     fprintf(stderr,"first: %s\nlast: %s\n",smerlist[0].key, smerlist[hashsize-1].key);
-    //ks_mergesort(pair, hashsize, smerlist, 0);
 
 
     jellyhash smerhash;
@@ -102,7 +111,6 @@ int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
     }
     fprintf(stderr,"binning kmers\n");
 
-    //TODO implement option for per sequence transformation or total amount of sequence
     unsigned long bases =  belly_extract_spaces(seq, &info, &smerhash, smerlist, opts.mode);
 
     fprintf(stderr,"%lu bases\n",bases);

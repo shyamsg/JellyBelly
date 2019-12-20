@@ -2,6 +2,7 @@
 typedef struct {
     char *seqfilename;
     char *smerfilename;
+    char *outputfilename;
     int mode;
     int buffersize;
 } JellyOpts;
