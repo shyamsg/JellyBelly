@@ -206,9 +206,10 @@ int belly_get_mask(FILE *smer_file, jellyinfo *info)
 }
 
 
-//TODO Change name to belly_getsmer
 char *get_smer(char *array, int kmerlength, int smernum)
 {
+
+    //TODO Change name to belly_getsmer
     char *smer = malloc(kmerlength+1);
     if (!smer) return NULL;
     smer[kmerlength] = '\0';
@@ -283,7 +284,6 @@ void belly_fill_smer_list(SpKMER *smerlist,
 }
 
 
-//
 unsigned long belly_extract_spaces(kseq_t *seq,
                                    jellyinfo *info,
                                    jellyhash *smerhash,
@@ -297,11 +297,17 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     unsigned long int n = 0;
     unsigned long int total_kmers = 0;
     unsigned int *hash_vector = malloc(hash_size*sizeof(unsigned int));
-    if (!hash_vector) return 0;
+    if (!hash_vector) {
+        total_seq = 0;
+        goto exit;
+    }
 
     //Vector holding scaled spaced kmer values for input sequences.
     float *scale_vector = malloc((hash_size*info->buffersize)*sizeof(float));
-    if (!scale_vector) return 0;
+    if (!scale_vector) {
+        total_seq = 0;
+        goto exit;
+    }
     //Index for scaled vector
     unsigned long int sv_idx = 0;
     unsigned long int numkmers = 0;
@@ -312,9 +318,8 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         //Check for valid sequence file format (fasta/fastq)
         if (sequence_length < 0) {
             fprintf(stderr,"ERROR: Could not read in sequence file.\n");
-            free(hash_vector);
-            free(scale_vector);
-            return -1;
+            total_seq = 0;
+            goto exit;
         }
         //Check for sequence >= kmerlength
         else if (sequence_length < info->kmerlength) continue;
@@ -330,15 +335,16 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         total_kmers += numkmers;
         //Output spaced kmer vector for current sequence
         if (!opts.mode) {
-            //TODO Exit correctly on error
-            //belly_reducehash(&smerhash, smerlist, hashsize, info.smerlength);
             belly_extract_vector(smerhash, hash_size, smer_list, hash_vector);
             if (!belly_scale(hash_vector,
                              hash_size,
                              scale_vector,
                              hash_size,
                              &sv_idx,
-                             numkmers)) return 0;
+                             numkmers)) {
+                total_seq = 0;
+                goto exit;
+            }
             hash_reset(smerhash->h, smerhash->k);
         }
         n++;
@@ -346,30 +352,32 @@ unsigned long belly_extract_spaces(kseq_t *seq,
 
     if (n == 0) {
         fprintf(stderr,"Error in sequence file\n");
-        free(scale_vector);
-        free(hash_vector);
-        return -1;
+        total_seq = 0;
+        goto exit;
     }
     //Output spaced kmer vector for file
     if (opts.mode) {
-        //Be sure
         sv_idx = 0;
         belly_extract_vector(smerhash, hash_size, smer_list, hash_vector);
-        //TODO Exit correctly on error Last 0 should be total kmers
         if (!belly_scale(hash_vector,
                          hash_size,
                          scale_vector,
                          hash_size,
                          &sv_idx,
-                         total_kmers)) return 0;
+                         total_kmers)) {
+            total_seq = 0;
+            goto exit;
+        }
     }
 
     //Log info
     fprintf(stderr,"%lu total reads.\n",n);
     fprintf(stderr, "%lu total kmers\n", total_kmers);
-    free(scale_vector);
-    free(hash_vector);
-    return(total_seq);
+
+    exit:
+        free(scale_vector);
+        free(hash_vector);
+        return(total_seq);
 }
 
 
@@ -405,9 +413,6 @@ unsigned long int belly_count(char *seq,
 }
 
 
-/*
-
-*/
 void belly_extract_vector(jellyhash *smerhash,
                           unsigned long vector_length,
                           SpKMER *smerlist,
@@ -417,6 +422,40 @@ void belly_extract_vector(jellyhash *smerhash,
         smerhash->k = kh_get(smer, smerhash->h, smerlist[i].key);
         vector[i] = kh_val(smerhash->h, smerhash->k);
     }
+}
+
+int belly_scale(unsigned int *vec,
+                unsigned int hsize,
+                float *scvec,
+                int len,
+                unsigned long int *svidx,
+                unsigned long int nkmers)
+{
+    //TODO bundle diff, min and tmp into struct and pass by reference
+    unsigned int diff;
+    unsigned int min;
+    unsigned int *tmp = malloc(len*sizeof(unsigned int));
+    if (!tmp) return 0;
+    memcpy(tmp, vec, len*sizeof(unsigned int));
+
+    ks_mergesort(pairSC, len, vec, 0);
+    min = belly_min(vec);
+    diff = belly_max(vec, len) - min;
+    fprintf(stderr,"min: %d\t max: %d\n", min, belly_max(vec, len));
+    for (unsigned long i = 0; i < len; i++)
+        scvec[(*svidx*hsize) + i] = (((float)tmp[i] - (float)min) / (float)diff);
+
+    //TODO do the actual printing
+    if (*svidx == 0) {
+        *svidx=0;
+        fprintf(stderr,"Dumping\n");
+        belly_vectorout(scvec, hsize);
+    }
+    else {
+        *svidx += 1;
+    }
+    free(tmp);
+    return 1;
 }
 
 
@@ -442,42 +481,6 @@ void belly_exit(gzFile fp,
   free(info->smer_seq);
   free(info->mask);
   fclose(info->output);
-}
-
-
-int belly_scale(unsigned int *vector,
-                unsigned int hashsize,
-                float *scaled_vector,
-                int length,
-                unsigned long int *sv_idx,
-                unsigned long int numkmers)
-{
-    unsigned int diff_val;
-    unsigned int min_val;
-    unsigned int *tmp_vector = malloc(length*sizeof(unsigned int));
-    if (!tmp_vector) return 0;
-    memcpy(tmp_vector, vector, length*sizeof(unsigned int));
-
-    ks_mergesort(pairSC, length, vector, 0);
-    min_val = belly_min(vector);
-    diff_val = belly_max(vector, length) - min_val;
-    fprintf(stderr,"min: %d\t max: %d\n",min_val,belly_max(vector, length));
-    for (unsigned long i = 0; i < length; i++) {
-        scaled_vector[(*sv_idx*hashsize) + i] = (((float)tmp_vector[i] - (float)min_val) / (float)diff_val);
-        //scaled_vector[(*sv_idx*hashsize) + i] = (float)tmp_vector[i] / (float)numkmers;
-    }
-
-    //TODO do the actual printing
-    if (*sv_idx == 0) {
-        *sv_idx=0;
-        fprintf(stderr,"Dumping\n");
-        belly_vectorout(scaled_vector, hashsize);
-    }
-    else {
-        *sv_idx += 1;
-    }
-    free(tmp_vector);
-    return 1;
 }
 
 
