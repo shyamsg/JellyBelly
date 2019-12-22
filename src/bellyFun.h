@@ -67,8 +67,10 @@ typedef struct {
     unsigned long int smernum;
     int *mask;
     int buffersize;
+    float *routput;
+    float *soutput;
     FILE *output;
-} jellyinfo;
+} jellydata;
 
 
 /*
@@ -83,10 +85,10 @@ typedef struct {
 /*
  Struct for storing output data
 */
-typedef struct {
-    float *scaled_vector;
-    FILE *out;
-} jellyout;
+//typedef struct {
+//    float *scaled_vector;
+//    FILE *out;
+//} jellyout;
 
 
 
@@ -97,7 +99,8 @@ int belly_start(gzFile fp,
 
 
 int belly_read_header(FILE *file,
-                      jellyinfo *info);
+                      jellydata *info,
+                      int mode);
 
 
 int check_zeros(char *zero_vector, int length);
@@ -112,7 +115,7 @@ int check_zeros(char *zero_vector, int length);
   returns:
   void
 */
-int belly_get_mask(FILE *smer_file, jellyinfo *info);
+int belly_get_mask(FILE *smer_file, jellydata *info, int mode);
 
 char *get_smer(char *array, int kmerlen, int smernum);
 
@@ -120,22 +123,22 @@ int randint(int max);
 
 
 //TODO Document
-unsigned int belly_hash_init(jellyhash *smerhash, jellyinfo *info, SpKMER *smerlist);
+unsigned int belly_hash_init(jellyhash *smerhash, jellydata *info, SpKMER *smerlist);
 
 //TODO Document
 void belly_exit(gzFile fp,
                 kseq_t *seq,
                 jellyhash smerhash,
-                jellyinfo *info,
+                jellydata *info,
                 SpKMER *smerlist,
                 unsigned int hashsize);
 
 
-void belly_fill_smer_list(SpKMER *smerlist, jellyinfo *info ,int idx, unsigned int *smer_idx);
+void belly_fill_smer_list(SpKMER *smerlist, jellydata *info ,int idx, unsigned int *smer_idx);
 
 
 unsigned long belly_extract_spaces(kseq_t *seq,
-                                   jellyinfo *info,
+                                   jellydata *info,
                                    jellyhash *smerhash,
                                    SpKMER *smerlist,
                                    JellyOpts mode);
@@ -143,7 +146,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
 
 unsigned long int belly_count(char *seq,
                               int l,
-                              jellyinfo *info,
+                              jellydata *info,
                               jellyhash *smerhash);
 
 
@@ -166,7 +169,7 @@ unsigned int belly_max(unsigned int *vector, int length);
 unsigned int belly_min(unsigned int *vector);
 
 
-int belly_allocateinfo(jellyinfo *info, int mode);
+int belly_allocateinfo(jellydata *info, int mode);
 
 
 void belly_vectorout(float *vector, unsigned int size);

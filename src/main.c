@@ -103,9 +103,6 @@ void usage()
 }
 
 
-/*
-
-*/
 void read_opts(int argc, char **argv, JellyOpts *opts)
 {
     opts->seqfilename = NULL;

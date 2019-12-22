@@ -42,9 +42,14 @@ KSORT_INIT_GENERIC(int)
 int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
 {
     srand(time(NULL));
-    jellyinfo info;
+
+    jellydata info;
     info.kmer_seq = NULL;
     info.smer_seq = NULL;
+    info.mask = NULL;
+    info.routput = NULL;
+    info.soutput = NULL;
+    info.output = NULL;
     info.buffersize = opts.buffersize;
 
     //Check for output file
@@ -57,7 +62,7 @@ int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
     }
 
     //Read spaced kmer file
-    if (!belly_read_header(smer_file, &info)) {
+    if (!belly_read_header(smer_file, &info, opts.mode)) {
         fprintf(stderr, "ERROR: Corrupted bin file.\n");
         return 1;
     }
@@ -65,16 +70,16 @@ int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
                                                 info.smerlength,
                                                 info.smernum);
 
-    if (!belly_allocateinfo(&info, opts.mode)) {
-        fprintf(stderr,"ERROR: Could not allocate enough memory.\n");
-        return 1;
-    }
+    //if (!belly_allocateinfo(&info, opts.mode)) {
+    //    fprintf(stderr,"ERROR: Could not allocate enough memory.\n");
+    //    return 1;
+    //}
 
     //Get spaced kmer mask
-    if (!belly_get_mask(smer_file, &info)) {
-        fprintf(stderr, "ERROR: Could not read spaced kmer mask.\n");
-        return 1;
-    }
+    //if (!belly_get_mask(smer_file, &info)) {
+    //    fprintf(stderr, "ERROR: Could not read spaced kmer mask.\n");
+    //    return 1;
+    //}
 
     //Create spaced kmer struct and sort lexicographically
     unsigned int hashsize = pow(4, info.smerlength);
@@ -118,7 +123,7 @@ int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
 }
 
 
-int belly_read_header(FILE *file, jellyinfo *info)
+int belly_read_header(FILE *file, jellydata *info, int mode)
 {
     int bytes_read;
     char zero_vector[19];
@@ -155,8 +160,14 @@ int belly_read_header(FILE *file, jellyinfo *info)
     if (!check_zeros(zero_vector, 19)) {
         return 0;
     }
-
     free(header);
+
+    //Get spaced kmer mask
+    if (!belly_get_mask(file, info, mode)) {
+      fprintf(stderr, "ERROR: Could not read spaced kmer mask.\n");
+      return 1;
+    }
+
     return 1;
 }
 
@@ -172,9 +183,12 @@ int check_zeros(char *zero_vector, int length)
 }
 
 
-int belly_get_mask(FILE *smer_file, jellyinfo *info)
+int belly_get_mask(FILE *smer_file, jellydata *info, int mode)
 {
-
+    if (!belly_allocateinfo(info, mode)) {
+        fprintf(stderr,"ERROR: Could not allocate enough memory.\n");
+        return 1;
+    }
     info->mask = malloc((info->smerlength + 1)*sizeof(int));
     if (!info->mask) return 0;
 
@@ -202,6 +216,13 @@ int belly_get_mask(FILE *smer_file, jellyinfo *info)
     info->mask[j] = -1;
     free(smer);
     free(smer_array);
+
+    //Get spaced kmer mask
+    if (!belly_get_mask(smer_file, info, mode)) {
+      fprintf(stderr, "ERROR: Could not read spaced kmer mask.\n");
+      return 0;
+    }
+
     return 1;
 }
 
@@ -235,7 +256,7 @@ int randint(int max)
 
 
 unsigned int belly_hash_init(jellyhash *smerhash,
-                             jellyinfo *info,
+                             jellydata *info,
                              SpKMER *smerlist)
 {
     int absent;
@@ -258,7 +279,7 @@ unsigned int belly_hash_init(jellyhash *smerhash,
 
 
 void belly_fill_smer_list(SpKMER *smerlist,
-                          jellyinfo *info,
+                          jellydata *info,
                           int idx,
                           unsigned int *smer_idx)
 {
@@ -285,7 +306,7 @@ void belly_fill_smer_list(SpKMER *smerlist,
 
 
 unsigned long belly_extract_spaces(kseq_t *seq,
-                                   jellyinfo *info,
+                                   jellydata *info,
                                    jellyhash *smerhash,
                                    SpKMER *smer_list,
                                    JellyOpts opts)
@@ -373,7 +394,6 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     //Log info
     fprintf(stderr,"%lu total reads.\n",n);
     fprintf(stderr, "%lu total kmers\n", total_kmers);
-
     exit:
         free(scale_vector);
         free(hash_vector);
@@ -386,7 +406,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
 */
 unsigned long int belly_count(char *seq,
                               int l,
-                              jellyinfo *info,
+                              jellydata *info,
                               jellyhash *smerhash)
 {
     unsigned long int kmer_num = 0;
@@ -423,6 +443,7 @@ void belly_extract_vector(jellyhash *smerhash,
         vector[i] = kh_val(smerhash->h, smerhash->k);
     }
 }
+
 
 int belly_scale(unsigned int *vec,
                 unsigned int hsize,
@@ -462,7 +483,7 @@ int belly_scale(unsigned int *vec,
 void belly_exit(gzFile fp,
                 kseq_t *seq,
                 jellyhash smerhash,
-                jellyinfo *info,
+                jellydata *info,
                 SpKMER *smerlist,
                 unsigned int hashsize)
 {
@@ -497,19 +518,20 @@ unsigned int belly_min(unsigned int *vector) {
 
 void belly_vectorout(float *vector, unsigned int size)
 {
-    unsigned int pos;
-    for (unsigned int j = 0; j < 1; j++) {
-        pos = j*size;
-        fprintf(stdout,"%.8f",vector[pos]);
-        for (unsigned long int i = 1; i < size; i++) {
-            fprintf(stdout,"\t%.8f",vector[pos + i]);
-        }
-        fprintf(stdout, "\n");
+    unsigned int pos = 0;
+    //for (unsigned int j = 0; j < 1; j++) {
+    //pos = j*size;
+    fprintf(stdout,"%.8f",vector[pos]);
+    for (unsigned long int i = 1; i < size; i++) {
+        //Change to print to file and change between binary and text
+        fprintf(stdout,"\t%.8f",vector[pos + i]);
     }
+    fprintf(stdout, "\n");
+    //}
 }
 
 
-int belly_allocateinfo(jellyinfo *info, int mode)
+int belly_allocateinfo(jellydata *info, int mode)
 {
     if (!mode) {
         fprintf(stderr,"Running on contig sequence mode.\n");
