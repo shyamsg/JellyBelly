@@ -79,21 +79,25 @@ typedef struct {
 typedef struct {
     khash_t(smer) *h;
     khint_t k;
+    unsigned long int hashsize;
 } jellyhash;
 
 
-//TODO Document
 int belly_start(gzFile fp,
                 FILE *smer_file,
-                JellyOpts opts);
+                jellyopts opts);
+
+
+int belly_jellyinit(jellydata *jdata, jellyopts opts, FILE *smer_file);
 
 
 int belly_read_header(FILE *file,
-                      jellydata *info,
-                      int mode);
+                      jellydata *info);
 
 
-int check_zeros(char *zero_vector, int length);
+int check_zeros(char *zero_vector,
+                int length);
+
 
 /*Sets "mask" to corresponding values given "kmerlength" kmer length and
   "spacelength" number of spaces.
@@ -105,33 +109,45 @@ int check_zeros(char *zero_vector, int length);
   returns:
   void
 */
-int belly_get_mask(FILE *smer_file, jellydata *info, int mode);
+int belly_get_mask(FILE *smer_file,
+                   jellydata *info,
+                   int mode);
 
-char *get_smer(char *array, int kmerlen, int smernum);
+
+char *get_smer(char *array,
+               int kmerlen,
+               int smernum);
+
+
+int belly_hashinit(SpKMER **smerlist, jellyhash *smerhash, jellydata jdara);
+
 
 int randint(int max);
 
 
-//TODO Document
-unsigned int belly_hash_init(jellyhash *smerhash, jellydata *info, SpKMER *smerlist);
+unsigned int belly_hash_fill(jellyhash *smerhash,
+                             jellydata jdata,
+                             SpKMER *smerlist);
 
-//TODO Document
+
 void belly_exit(gzFile fp,
                 kseq_t *seq,
                 jellyhash smerhash,
                 jellydata *info,
-                SpKMER *smerlist,
-                unsigned int hashsize);
+                SpKMER *smerlist);
 
 
-void belly_fill_smer_list(SpKMER *smerlist, jellydata *info ,int idx, unsigned int *smer_idx);
+void belly_fill_smer_list(SpKMER *smerlist,
+                          jellydata info,
+                          int idx,
+                          unsigned int *smer_idx);
 
 
 unsigned long belly_extract_spaces(kseq_t *seq,
                                    jellydata *info,
                                    jellyhash *smerhash,
                                    SpKMER *smerlist,
-                                   JellyOpts mode);
+                                   jellyopts mode);
 
 
 unsigned long int belly_count(char *seq,
@@ -153,13 +169,16 @@ int belly_scale(unsigned int *vector,
                 unsigned long int numkmers);
 
 
-unsigned int belly_max(unsigned int *vector, int length);
+unsigned int belly_max(unsigned int *vector,
+                       int length);
 
 
 unsigned int belly_min(unsigned int *vector);
 
 
-int belly_allocateinfo(jellydata *info, int mode);
+int belly_allocateinfo(jellydata *info,
+                       int mode);
 
 
-void belly_vectorout(float *vector, unsigned int size);
+void belly_vectorout(float *vector,
+                     unsigned int size);

@@ -41,7 +41,7 @@ JetBelly - Extract and bin kmers from fasta sequences of fastq sequencing files
 int main(int argc, char **argv)
 {
     fprintf(stderr,"%d\n", argc);
-    JellyOpts opts;
+    jellyopts opts;
 
     // Check for correct number of arguments
     if (argc < 5) {
@@ -103,7 +103,7 @@ void usage()
 }
 
 
-void read_opts(int argc, char **argv, JellyOpts *opts)
+void read_opts(int argc, char **argv, jellyopts *opts)
 {
     opts->seqfilename = NULL;
     opts->smerfilename = NULL;
@@ -160,7 +160,7 @@ void read_opts(int argc, char **argv, JellyOpts *opts)
 }
 
 
-void print_opts(JellyOpts opts)
+void print_opts(jellyopts opts)
 {
     fprintf(stderr,"\t sequence file:\t\t%s\n", opts.seqfilename);
     fprintf(stderr,"\t spaced kmer file:\t%s\n", opts.smerfilename);
