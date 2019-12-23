@@ -82,16 +82,6 @@ typedef struct {
 } jellyhash;
 
 
-/*
- Struct for storing output data
-*/
-//typedef struct {
-//    float *scaled_vector;
-//    FILE *out;
-//} jellyout;
-
-
-
 //TODO Document
 int belly_start(gzFile fp,
                 FILE *smer_file,

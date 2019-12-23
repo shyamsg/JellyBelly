@@ -70,17 +70,6 @@ int belly_start(gzFile fp, FILE *smer_file, JellyOpts opts)
                                                 info.smerlength,
                                                 info.smernum);
 
-    //if (!belly_allocateinfo(&info, opts.mode)) {
-    //    fprintf(stderr,"ERROR: Could not allocate enough memory.\n");
-    //    return 1;
-    //}
-
-    //Get spaced kmer mask
-    //if (!belly_get_mask(smer_file, &info)) {
-    //    fprintf(stderr, "ERROR: Could not read spaced kmer mask.\n");
-    //    return 1;
-    //}
-
     //Create spaced kmer struct and sort lexicographically
     unsigned int hashsize = pow(4, info.smerlength);
     fprintf(stderr, "Generating %u spaced kmers\n", hashsize);
@@ -162,6 +151,10 @@ int belly_read_header(FILE *file, jellydata *info, int mode)
     }
     free(header);
 
+    if (!belly_allocateinfo(info, mode)) {
+        fprintf(stderr,"ERROR: Could not allocate enough memory.\n");
+        return 1;
+    }
     //Get spaced kmer mask
     if (!belly_get_mask(file, info, mode)) {
       fprintf(stderr, "ERROR: Could not read spaced kmer mask.\n");
@@ -185,10 +178,7 @@ int check_zeros(char *zero_vector, int length)
 
 int belly_get_mask(FILE *smer_file, jellydata *info, int mode)
 {
-    if (!belly_allocateinfo(info, mode)) {
-        fprintf(stderr,"ERROR: Could not allocate enough memory.\n");
-        return 1;
-    }
+
     info->mask = malloc((info->smerlength + 1)*sizeof(int));
     if (!info->mask) return 0;
 
@@ -216,12 +206,6 @@ int belly_get_mask(FILE *smer_file, jellydata *info, int mode)
     info->mask[j] = -1;
     free(smer);
     free(smer_array);
-
-    //Get spaced kmer mask
-    if (!belly_get_mask(smer_file, info, mode)) {
-      fprintf(stderr, "ERROR: Could not read spaced kmer mask.\n");
-      return 0;
-    }
 
     return 1;
 }
@@ -401,9 +385,6 @@ unsigned long belly_extract_spaces(kseq_t *seq,
 }
 
 
-/*
-  Count spaced kmers in a given sequence
-*/
 unsigned long int belly_count(char *seq,
                               int l,
                               jellydata *info,
