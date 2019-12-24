@@ -181,4 +181,5 @@ int belly_allocateinfo(jellydata *info,
 
 
 void belly_vectorout(float *vector,
-                     unsigned int size);
+                     unsigned int size,
+                     FILE *outfile);

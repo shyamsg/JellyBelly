@@ -74,9 +74,12 @@ int main(int argc, char **argv)
     }
 
     // Run
-    int ret = belly_start(fp, smer_file, opts);
+    if (!belly_start(fp, smer_file, opts)) {
+        fprintf(stderr, "ERROR: JelyBelly ran unsuccesfully.\n");
+        return -1;
+    }
     fclose(smer_file);
-    return(ret);
+    return 0;
 }
 
 
@@ -168,7 +171,7 @@ void print_opts(jellyopts opts)
     fprintf(stderr,"\t kmer mode:\t\t%s\n", (opts.mode==0)?"non-canonical":"canonical");
     fprintf(stderr,"\t buffer size:\t\t%d\n", opts.buffersize);
     fprintf(stderr,"\t count mode:\t\t%s\n", (opts.seqmode==1)?"contig":"read");
-    fprintf(stderr,"\t output format:\t\t%s\n", (opts.omode=="w")?"text":"binary");
+    fprintf(stderr,"\t output format:\t\t%s\n", (strcmp(opts.omode,"w")==0)?"text":"binary");
     fprintf(stderr,"\t scaled output:\t\t%s\n", (opts.scale==1)?"scaled":"raw");
 }
 

@@ -63,15 +63,17 @@ int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
     seq = kseq_init(fp);
     if (!seq) {
         fprintf(stderr,"ERROR: Could not open sequence file.\n");
-        return 1;
+        return 0;
     }
-    fprintf(stderr,"binning kmers\n");
 
-    unsigned long bases =  belly_extract_spaces(seq, &jdata, &smerhash, smerlist, opts);
+    if ( !belly_extract_spaces(seq, &jdata, &smerhash, smerlist, opts)) {
+      fprintf(stderr, "ERROR: Failed to count kmers.\n");
+      //TODO mem leak here
+      return 0;
+    }
 
-    fprintf(stderr,"%lu bases\n",bases);
     belly_exit(fp, seq, smerhash, &jdata, smerlist);
-    return 0;
+    return 1;
 }
 
 
@@ -290,6 +292,8 @@ unsigned int belly_hash_fill(jellyhash *smerhash,
                              jellydata jdata,
                              SpKMER *smerlist)
 {
+
+    fprintf(stderr,"binning kmers\n");
     int absent;
     //Add spaced kmer sequence to hash and set value to 0
     for (unsigned long int i = 0; i < pow(4, jdata.smerlength); i++) {
@@ -298,12 +302,13 @@ unsigned int belly_hash_fill(jellyhash *smerhash,
     }
 
     // Report hash size (number of elements in hash, must be equal to 4^smerlen)
-    unsigned int size = kh_size(smerhash->h);
-    fprintf(stderr,"hash size is %d\n",size);
+    unsigned long int size = kh_size(smerhash->h);
+    fprintf(stderr,"hash size is %lu\n",size);
     if (size != pow(4, jdata.smerlength)) {
         fprintf(stderr,"Error at generating spaced kmer hash.\n");
         return 0;
     }
+
     return(size);
 }
 
@@ -421,6 +426,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     //Log info
     fprintf(stderr,"%lu total reads.\n",n);
     fprintf(stderr, "%lu total kmers\n", total_kmers);
+    fprintf(stderr, "%lu total bases\n", total_seq);
     exit:
         free(scale_vector);
         free(hash_vector);
@@ -534,22 +540,23 @@ unsigned int belly_max(unsigned int *vector, int length)
 }
 
 
-unsigned int belly_min(unsigned int *vector) {
+unsigned int belly_min(unsigned int *vector)
+{
     return vector[0];
 }
 
 
-void belly_vectorout(float *vector, unsigned int size)
+void belly_vectorout(float *vector, unsigned int size, FILE *outfile)
 {
     unsigned int pos = 0;
     //for (unsigned int j = 0; j < 1; j++) {
     //pos = j*size;
-    fprintf(stdout,"%.8f",vector[pos]);
+    fprintf(outfile,"%.8f",vector[pos]);
     for (unsigned long int i = 1; i < size; i++) {
         //Change to print to file and change between binary and text
-        fprintf(stdout,"\t%.8f",vector[pos + i]);
+        fprintf(outfile,"\t%.8f",vector[pos + i]);
     }
-    fprintf(stdout, "\n");
+    fprintf(outfile, "\n");
     //}
 }
 
