@@ -24,7 +24,6 @@ SOFTWARE.
 
 #include <stdio.h>
 #include "khash.h"
-
 #include "bellyFun.h"
 #include "bellyHash.h"
 
@@ -36,14 +35,13 @@ void hash_declare(jellyhash *smerhash) {
     smerhash->k = kh_end(smerhash->h);
 }
 
-/*
-  Fill hash with all posible combinations of spaced kmers
-*/
+
 void hash_fill(char *str,
                int idx,            // index tracking str position
                int len,            // length of spaced kmer
                khash_t(smer) *h,   // hash table
-               khint_t k) {        // hash index
+               khint_t k)
+{
     int absent = 0;
     int i;
     if (idx < (len - 1)) {
@@ -64,10 +62,7 @@ void hash_fill(char *str,
     }
 }
 
-/*
-  free memory alocated in hash table
-*/
-//void hash_free(khash_t(smer) *h, khint_t k)
+
 void hash_free(jellyhash smerhash)
 {
     for (smerhash.k = 0; smerhash.k < kh_end(smerhash.h); ++(smerhash.k)) {
@@ -77,18 +72,16 @@ void hash_free(jellyhash smerhash)
   }
 }
 
-/*
-  Generate all possible spaced kmers
-  TODO - implement, not finished yet
-*/
-void hash_genSpacemer(const char *kmer, int *mask, char *smer) {
+
+void hash_genSpacemer(const char *kmer, int *mask, char *smer)
+{
     for (; *mask != -1; ++mask) {
         *(smer++) = kmer[*mask];
     }
     //*smer = '\0';
 }
 
-// Prints contents of hash in key\tvalue format
+
 void hash_print(khash_t(smer) *h,
                 khint_t k,
                 SpKMER *smerList,
@@ -101,12 +94,12 @@ void hash_print(khash_t(smer) *h,
   }
 }
 
-// Reset hash tabelo to zeros
-void hash_reset(khash_t(smer) *h, khint_t k) {
+
+void hash_reset(khash_t(smer) *h, khint_t k)
+{
   for (k = 0; k < kh_end(h); ++k) {
     if (kh_exist(h, k)) {
       kh_value(h, k) = 0;
     }
   }
 }
-
