@@ -40,8 +40,9 @@ JetBelly - Extract and bin kmers from fasta sequences of fastq sequencing files
 
 int main(int argc, char **argv)
 {
-    fprintf(stderr,"%d\n", argc);
     jellyopts opts;
+    gzFile fp;
+    FILE *smer_file;
 
     // Check for correct number of arguments
     if (argc < 5) {
@@ -52,30 +53,30 @@ int main(int argc, char **argv)
     // Read options
     read_opts(argc, argv, &opts);
 
-    gzFile fp;
     // Read from stdin
     if (strcmp( opts.seqfilename, "-") == 0) {
         opts.seqfilename = "/dev/stdin";
         if (check_stdin(opts.seqfilename) == 0) {
-            fprintf(stderr,"ERROR: -f - set but no data from stdin was detected.\n");
+            fprintf(stderr,"\tERROR: -f - set but no data from stdin was detected.\n");
             usage();
         }
     }
     fp = gzopen(opts.seqfilename, "r");
     if (!fp) {
-        fprintf(stderr, "ERROR: Can not open input file.\n");
+        fprintf(stderr, "\tERROR: Can not open input file.\n");
         usage();
     }
 
-    FILE *smer_file = fopen(opts.smerfilename,"rb");
+    smer_file = fopen(opts.smerfilename, "rb");
     if (! smer_file) {
-        fprintf(stderr,"ERROR: Can not open smer kmer file.\n");
+        fprintf(stderr,"\tERROR: Can not open smer kmer file.\n");
         usage();
     }
 
     // Run
     if (!belly_start(fp, smer_file, opts)) {
-        fprintf(stderr, "ERROR: JelyBelly ran unsuccesfully.\n");
+        fprintf(stderr, "\tERROR: JelyBelly ran unsuccesfully.\n");
+        fclose(smer_file);
         return -1;
     }
     fclose(smer_file);
@@ -98,7 +99,7 @@ void usage()
     fprintf(stderr,"\t  \t\tto be used. Refer to manual for detailed documentation.\n\n");
     fprintf(stderr,"\t-C \t\tCanonical mode. Lexicographically smallest kmer is ");
     fprintf(stderr,"counted.\n\t  \t\tSet this flag when analyzing sequencing reads.\n\n");
-    fprintf(stderr,"\t-b <int>\tNumber of spaced kmer vectors to keep in memory before\n");
+    fprintf(stderr,"\t-q <int>\tNumber of spaced kmer vectors to keep in memory before\n");
     fprintf(stderr,"\t  \t\twritting them to the outputfile. (-b 100)\n\n");
     fprintf(stderr,"\t-o <filename>\tOutput filename. (-o /dev/stdout)\n\n");
     fprintf(stderr,"\t-h \t\tThis help  message.\n\n");
@@ -135,7 +136,7 @@ void read_opts(int argc, char **argv, jellyopts *opts)
             opts->outputfilename = optarg;
             break;
         case 'b':
-            opts->omode = "b";
+            opts->omode = "wb";
             break;
         case 'r':
             opts->scale = 0;
@@ -148,7 +149,7 @@ void read_opts(int argc, char **argv, jellyopts *opts)
         }
     }
     if (!opts->seqfilename || !opts->smerfilename) {
-        fprintf(stderr,"\t ERROR: Please provide a sequence file (-f) and\n");
+        fprintf(stderr,"\tERROR: Please provide a sequence file (-f) and\n");
         fprintf(stderr,"\t        a spaced kmer file file (-s)\n\n");
         usage();
     }

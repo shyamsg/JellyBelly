@@ -30,7 +30,6 @@ SOFTWARE.
 // Li's klib
 #include "khash.h"
 #include "kseq.h"
-#include "ksort.h"
 
 #include "main.h"
 
@@ -60,12 +59,14 @@ typedef struct {
  Struct for storing kmer length value spaced kmer length value, and the mask to be used
 */
 typedef struct {
-    char *kmer_seq;
-    int kmerlength;
-    char *smer_seq;
-    int smerlength;
+    //Sequence variables
+    char *kmer_seq; //kmer sequence
+    int kmerlength; //kmer length
+    char *smer_seq; //spaced kmer sequence
+    int smerlength; //spaced kmer length
     unsigned long int smernum;
-    int *mask;
+    //Output variables
+    int *mask; //spaced kmer mask positions
     int buffersize;
     float *routput;
     float *soutput;
@@ -161,12 +162,11 @@ void belly_extract_vector(jellyhash *smerhash,
                           SpKMER *smerlist,
                           unsigned int *vector);
 
-int belly_scale(unsigned int *vector,
-                unsigned int hashsize,
-                float *scaled_vector,
-                int length,
-                unsigned long int *sv_idx,
-                unsigned long int numkmers);
+
+int belly_scale(unsigned int *vec,
+                unsigned int len,
+                float *scvec,
+                unsigned long int *svidx);
 
 
 unsigned int belly_max(unsigned int *vector,
@@ -183,3 +183,5 @@ int belly_allocateinfo(jellydata *info,
 void belly_vectorout(float *vector,
                      unsigned int size,
                      FILE *outfile);
+
+int belly_minmax(unsigned int *vector, int length, int *min, int *max);
