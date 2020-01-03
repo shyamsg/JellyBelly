@@ -105,7 +105,7 @@ int belly_jellyinit(jellydata *jdata, jellyopts opts, FILE *smer_file)
             jdata->smerlength,
             jdata->smernum);
 
-    if (!belly_allocateinfo(jdata, opts.mode)) {
+    if (!belly_allocateinfo(jdata, opts.scale)) {
         fprintf(stderr,"\tERROR: Could not allocate enough memory.\n");
         return 0;
     }
@@ -176,17 +176,29 @@ int check_zeros(char *zero_vector,
 }
 
 
-int belly_allocateinfo(jellydata *jdata,
-                       int mode)
+int belly_allocateinfo(jellydata *jdata, int scale)
 {
-    if (!mode) {
-        fprintf(stderr,"\tRunning on contig sequence mode.\n");
+    //TODO Add error checking for pow() operation
+    unsigned int size = (unsigned int)pow(4, jdata->smerlength);
+    if (scale) {
+        jdata->soutput = malloc((jdata->buffersize*size)*sizeof(float));
+        if (!jdata->soutput) {
+            fprintf(stderr, "\tERROR: Could not allocate data for output array.\n");
+            fprintf(stderr, "\t\ttry decreasing buffer size (-q)\n");
+            return 0;
+        }
+        //malloc for scaled output based on buffer
     }
     else {
-        fprintf(stderr,"\tRunning on read sequence mode.\n");
+        jdata->routput = malloc((jdata->buffersize*size)*sizeof(unsigned int));
+        if (!jdata->routput) {
+            fprintf(stderr, "\tERROR: Could not allocate data for output array.\n");
+            fprintf(stderr, "\t\ttry decreasing buffer size (-q)\n");
+            return 0;
+        }
+        //malloc for raw output
     }
 
-    // Declare kmer and spaced kmer array
     jdata->kmer_seq = malloc(((jdata->kmerlength)+1)*sizeof(char));
     if (!jdata->kmer_seq) {
         fprintf(stderr,"\tERROR: unable to allocate memory for kmer string.\n");
@@ -344,21 +356,13 @@ unsigned long belly_extract_spaces(kseq_t *seq,
                                    SpKMER *smerlist,
                                    jellyopts opts)
 {
-    //TODO exit properly
-    unsigned long hash_size = kh_size(smerhash->h);
     unsigned long int total_seq = 0;
     int sequence_length;
     unsigned long int n = 0;
     unsigned long int total_kmers = 0;
-    unsigned int *hash_vector = malloc(hash_size*sizeof(unsigned int));
-    if (!hash_vector) {
-        total_seq = 0;
-        goto exit;
-    }
 
     //Vector holding scaled spaced kmer values for input sequences.
-
-    jdata->soutput = malloc((hash_size*(jdata->buffersize))*sizeof(float));
+    jdata->soutput = malloc((kh_size(smerhash->h)*(jdata->buffersize))*sizeof(float));
     if (!jdata->soutput) {
         total_seq = 0;
         goto exit;
@@ -366,7 +370,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     //Index for scaled vector
     unsigned long int sv_idx = 0;
     unsigned long int numkmers = 0;
-    fprintf(stderr, "outmode: %s\n", opts.omode);
+    fprintf(stderr, "outmode: %d\n", opts.seqmode);
     //Read sequences in loop
     while ((sequence_length = kseq_read(seq)) >= 0) {
         //Several sanity checks
@@ -380,6 +384,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         else if (sequence_length < jdata->kmerlength) continue;
         //Check for empty sequence
         else if (sequence_length == 0) continue;
+
         //Check for valid kmers (Only containing A C G T)
         if (!(numkmers = belly_count(seq->seq.s, sequence_length, jdata, smerhash))) {
             fprintf(stderr, "\tWARNING: No valid kmers in sequence: %s.\n", seq->name.s);
@@ -389,36 +394,42 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         total_seq += sequence_length;
         total_kmers += numkmers;
         //Output spaced kmer vector for current sequence
-        if (!opts.mode) {
-            belly_extract_vector(smerhash, hash_size, smerlist, hash_vector);
-            if (!belly_scale(hash_vector,
-                             hash_size,
-                             jdata->soutput,
-                             &sv_idx)) {
+        if (!opts.seqmode) {
+            //Move sequence to output buffer
+            if (!belly_loadbuff(smerhash, opts.scale, sv_idx, smerlist, jdata)) {
+                fprintf(stderr, "\tERROR: Failed to output spaced kmer vector.\n");
                 total_seq = 0;
                 goto exit;
             }
+            sv_idx += 1;
             hash_reset(smerhash->h, smerhash->k);
+            //If buffer is full, dump to output file
+            if (!((n+1)%jdata->buffersize)) {
+                fprintf(stderr, "DUMPING VECTORS %ld %lu.\n", n, sv_idx);
+                sv_idx = 0;
+                //TODO implement dump vector contents to output file in desirted format
+                //belly_dump();
+            }
         }
         n++;
     }
 
     if (n == 0) {
-        fprintf(stderr,"Error in sequence file\n");
+        fprintf(stderr,"\tERROR: Sequence file empty\n");
         total_seq = 0;
         goto exit;
     }
     //Output spaced kmer vector for file
-    if (opts.mode) {
+    if (opts.seqmode) {
         sv_idx = 0;
-        belly_extract_vector(smerhash, hash_size, smerlist, hash_vector);
-        if (!belly_scale(hash_vector,
-                         hash_size,
-                         jdata->soutput,
-                         &sv_idx)) {
-            total_seq = 0;
-            goto exit;
-        }
+        //belly_extract_vector(smerhash, hash_size, smerlist, hash_vector);
+        //if (!belly_scale(hash_vector,
+        //                 hash_size,
+        //                 jdata->soutput,
+        //                 &sv_idx)) {
+        //    total_seq = 0;
+        //    goto exit;
+        //}
     }
 
     //Log info
@@ -427,7 +438,6 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     fprintf(stderr, "%lu total bases\n", total_seq);
     exit:
         free(jdata->soutput);
-        free(hash_vector);
         return(total_seq);
 }
 
@@ -572,4 +582,18 @@ void belly_vectorout(float *vector, unsigned int size, FILE *outfile)
 int randint(int max)
 {
     return 0 + rand() / (RAND_MAX / (max - 0 + 1) + 1);
+}
+
+
+int belly_loadbuff(jellyhash *smerhash,
+                 int scale,
+                 unsigned long int sv_idx,
+                 SpKMER *smerlist,
+                 jellydata *jdata) {
+    for (unsigned long int i = 0; i < kh_size(smerhash->h); i++) {
+        smerhash->k = kh_get(smer, smerhash->h, smerlist[i].key);
+        jdata->soutput[i] = kh_val(smerhash->h, smerhash->k);
+        if (i == 10) break;
+    }
+    return 1;
 }

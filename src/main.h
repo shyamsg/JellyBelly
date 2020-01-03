@@ -28,7 +28,7 @@ typedef struct {
     char *smerfilename;
     char *outputfilename;
     int mode;
-    int buffersize;
+    unsigned int buffersize;
     char *omode;
     int scale;
     int seqmode;

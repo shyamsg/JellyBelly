@@ -97,11 +97,14 @@ void usage()
     fprintf(stderr,"\t  \t\tform.\n\n");
     fprintf(stderr,"\t-s <filename>\tSpaced kmer file. Binary file containing the masks\n");
     fprintf(stderr,"\t  \t\tto be used. Refer to manual for detailed documentation.\n\n");
-    fprintf(stderr,"\t-C \t\tCanonical mode. Lexicographically smallest kmer is ");
-    fprintf(stderr,"counted.\n\t  \t\tSet this flag when analyzing sequencing reads.\n\n");
+    fprintf(stderr,"\t-C \t\tCanonical mode. Lexicographically smallest kmer is counted.\n");
+    fprintf(stderr,"\t  \t\tSet this flag when analyzing sequencing reads. (OFF)\n\n");
     fprintf(stderr,"\t-q <int>\tNumber of spaced kmer vectors to keep in memory before\n");
-    fprintf(stderr,"\t  \t\twritting them to the outputfile. (-b 100)\n\n");
+    fprintf(stderr,"\t  \t\twritting them to the outputfile. (-q 100)\n\n");
     fprintf(stderr,"\t-o <filename>\tOutput filename. (-o /dev/stdout)\n\n");
+    fprintf(stderr,"\t-r \t\tRaw output: spaced kmer counts (OFF)\n\n");
+    fprintf(stderr,"\t-l \t\tGenome mode. A single spaced kmer vector is\n");
+    fprintf(stderr,"\t  \t\tcomputed for all input sequences. (OFF)\n\n");
     fprintf(stderr,"\t-h \t\tThis help  message.\n\n");
     exit(1);
 }
@@ -166,14 +169,14 @@ void read_opts(int argc, char **argv, jellyopts *opts)
 
 void print_opts(jellyopts opts)
 {
-    fprintf(stderr,"\t sequence file:\t\t%s\n", opts.seqfilename);
-    fprintf(stderr,"\t spaced kmer file:\t%s\n", opts.smerfilename);
-    fprintf(stderr,"\t output file:\t\t%s\n", opts.outputfilename);
-    fprintf(stderr,"\t kmer mode:\t\t%s\n", (opts.mode==0)?"non-canonical":"canonical");
-    fprintf(stderr,"\t buffer size:\t\t%d\n", opts.buffersize);
-    fprintf(stderr,"\t count mode:\t\t%s\n", (opts.seqmode==1)?"contig":"read");
-    fprintf(stderr,"\t output format:\t\t%s\n", (strcmp(opts.omode,"w")==0)?"text":"binary");
-    fprintf(stderr,"\t scaled output:\t\t%s\n", (opts.scale==1)?"scaled":"raw");
+    fprintf(stderr,"\tsequence file:\t\t%s\n", opts.seqfilename);
+    fprintf(stderr,"\tspaced kmer file:\t%s\n", opts.smerfilename);
+    fprintf(stderr,"\toutput file:\t\t%s\n", opts.outputfilename);
+    fprintf(stderr,"\tkmer mode:\t\t%s\n", (opts.mode==0)?"non-canonical":"canonical");
+    fprintf(stderr,"\tbuffer size:\t\t%d\n", opts.buffersize);
+    fprintf(stderr,"\tgenome mode:\t\t%s\n", (opts.seqmode==1)?"ON":"OFF");
+    fprintf(stderr,"\toutput format:\t\t%s\n", (strcmp(opts.omode,"w")==0)?"text":"binary");
+    fprintf(stderr,"\tscaled output:\t\t%s\n", (opts.scale==1)?"ON":"OFF");
 }
 
 

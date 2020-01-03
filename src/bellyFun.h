@@ -34,8 +34,8 @@ SOFTWARE.
 #include "main.h"
 
 //TODO Document
-#define pair_lt(a, b) ((strcmp((a).key,(b).key) < 0)?1:0)
-#define pair_sc(a, b) ((a) < (b))
+//#define pair_lt(a, b) ((strcmp((a).key,(b).key) < 0)?1:0)
+//#define pair_sc(a, b) ((a) < (b))
 
 
 //Initialize Heng Li's khash
@@ -68,7 +68,7 @@ typedef struct {
     //Output variables
     int *mask; //spaced kmer mask positions
     int buffersize;
-    float *routput;
+    unsigned int *routput;
     float *soutput;
     FILE *output;
 } jellydata;
@@ -176,8 +176,7 @@ unsigned int belly_max(unsigned int *vector,
 unsigned int belly_min(unsigned int *vector);
 
 
-int belly_allocateinfo(jellydata *info,
-                       int mode);
+int belly_allocateinfo(jellydata *info, int scale);
 
 
 void belly_vectorout(float *vector,
@@ -185,3 +184,10 @@ void belly_vectorout(float *vector,
                      FILE *outfile);
 
 int belly_minmax(unsigned int *vector, int length, int *min, int *max);
+
+
+int belly_loadbuff(jellyhash *smerhash,
+                 int scale,
+                 unsigned long int sv_idx,
+                 SpKMER *smerlist,
+                 jellydata *jdata);
