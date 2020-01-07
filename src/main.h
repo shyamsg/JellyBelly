@@ -29,9 +29,9 @@ typedef struct {
     char *outputfilename;
     int mode;
     unsigned int buffersize;
-    char *omode;
-    int scale;
-    int seqmode;
+    int binout;
+    int raw;
+    int gmode;
 } jellyopts;
 
 void usage();

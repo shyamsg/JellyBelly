@@ -449,7 +449,8 @@ void writeSPacedKmers(char *space_list,
 }
 
 
-int write_header(FILE *bitmask_file, int kmerlen, int smerlen, unsigned long int smernum) {
+int write_header(FILE *bitmask_file, int kmerlen, int smerlen, unsigned long int smernum)
+{
     char *head_start[] = {0,0,0,0,0,0,0};
     char *spacer[] = {0,0,0};
     char *head_end[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//,0,0,0,0,0,0,0,0,0,0,0};

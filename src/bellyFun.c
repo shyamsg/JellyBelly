@@ -34,10 +34,6 @@ SOFTWARE.
 #include "bellyMisc.h"
 
 
-//Initialize ksort for scaled vector
-//KSORT_INIT(pairSC, unsigned int, pair_sc)
-//KSORT_INIT_GENERIC(int)
-
 
 int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
 {
@@ -87,14 +83,6 @@ int belly_jellyinit(jellydata *jdata, jellyopts opts, FILE *smer_file)
     jdata->output = NULL;
     jdata->buffersize = opts.buffersize;
 
-    //Check for output file
-    jdata->output = fopen(opts.outputfilename, opts.omode);
-    if (!jdata->output) {
-        fprintf(stderr, "\tERROR: Could not open output file: %s\n",
-                opts.outputfilename);
-        if (errno == 13) fprintf(stderr, "\t\tPermission denied\n");
-        return 0;
-    }
     //Read spaced kmer file
     if (!belly_read_header(smer_file, jdata)) {
         fprintf(stderr, "\tERROR: Corrupted bin file.\n");
@@ -105,7 +93,7 @@ int belly_jellyinit(jellydata *jdata, jellyopts opts, FILE *smer_file)
             jdata->smerlength,
             jdata->smernum);
 
-    if (!belly_allocateinfo(jdata, opts.scale)) {
+    if (!belly_allocateinfo(jdata, opts.raw)) {
         fprintf(stderr,"\tERROR: Could not allocate enough memory.\n");
         return 0;
     }
@@ -115,6 +103,20 @@ int belly_jellyinit(jellydata *jdata, jellyopts opts, FILE *smer_file)
         fprintf(stderr, "\tERROR: Could not read spaced kmer mask.\n");
         return 0;
     }
+
+    if (opts.binout) {
+        jdata->output = fopen(opts.outputfilename, "wb");
+        if (!belly_checkfile(jdata->output)) return 0;
+        if (!belly_ofileinit(jdata)) {
+            fprintf(stderr, "\tERROR: Failed to initialize output file.\n");
+            return 0;
+        }
+    }
+    else {
+        jdata->output = fopen(opts.outputfilename, "w");
+        if (!belly_checkfile(jdata->output)) return 0;
+    }
+
 
     return 1;
 }
@@ -176,27 +178,27 @@ int check_zeros(char *zero_vector,
 }
 
 
-int belly_allocateinfo(jellydata *jdata, int scale)
+int belly_allocateinfo(jellydata *jdata, int raw)
 {
     //TODO Add error checking for pow() operation
     unsigned int size = (unsigned int)pow(4, jdata->smerlength);
-    if (scale) {
-        jdata->soutput = malloc((jdata->buffersize*size)*sizeof(float));
-        if (!jdata->soutput) {
-            fprintf(stderr, "\tERROR: Could not allocate data for output array.\n");
-            fprintf(stderr, "\t\ttry decreasing buffer size (-q)\n");
-            return 0;
-        }
-        //malloc for scaled output based on buffer
-    }
-    else {
+
+    if (raw) {
         jdata->routput = malloc((jdata->buffersize*size)*sizeof(unsigned int));
         if (!jdata->routput) {
             fprintf(stderr, "\tERROR: Could not allocate data for output array.\n");
             fprintf(stderr, "\t\ttry decreasing buffer size (-q)\n");
             return 0;
         }
-        //malloc for raw output
+    }
+    else {
+        fprintf(stderr, "\tINFO: Allocating %lu bytes.\n", (jdata->buffersize*size)*sizeof(float));
+        jdata->soutput = malloc((jdata->buffersize*size)*sizeof(float));
+        if (!jdata->soutput) {
+            fprintf(stderr, "\tERROR: Could not allocate data for output array.\n");
+            fprintf(stderr, "\t\ttry decreasing buffer size (-q)\n");
+            return 0;
+        }
     }
 
     jdata->kmer_seq = malloc(((jdata->kmerlength)+1)*sizeof(char));
@@ -306,7 +308,6 @@ unsigned int belly_hash_fill(jellyhash *smerhash,
                              SpKMER *smerlist)
 {
 
-    fprintf(stderr,"binning kmers\n");
     int absent;
     //Add spaced kmer sequence to hash and set value to 0
     for (unsigned long int i = 0; i < pow(4, jdata.smerlength); i++) {
@@ -360,17 +361,18 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     int sequence_length;
     unsigned long int n = 0;
     unsigned long int total_kmers = 0;
-
-    //Vector holding scaled spaced kmer values for input sequences.
-    jdata->soutput = malloc((kh_size(smerhash->h)*(jdata->buffersize))*sizeof(float));
-    if (!jdata->soutput) {
-        total_seq = 0;
-        goto exit;
+    void *output;
+    if (opts.raw) {
+        output = jdata->routput;
+    }
+    else {
+        output = jdata->soutput;
     }
     //Index for scaled vector
-    unsigned long int sv_idx = 0;
+    unsigned long int v_idx = 0;
     unsigned long int numkmers = 0;
-    fprintf(stderr, "outmode: %d\n", opts.seqmode);
+
+    fprintf(stderr, "\tINFO: Vectorizing sequence data.\n");
     //Read sequences in loop
     while ((sequence_length = kseq_read(seq)) >= 0) {
         //Several sanity checks
@@ -388,25 +390,32 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         //Check for valid kmers (Only containing A C G T)
         if (!(numkmers = belly_count(seq->seq.s, sequence_length, jdata, smerhash))) {
             fprintf(stderr, "\tWARNING: No valid kmers in sequence: %s.\n", seq->name.s);
+            n++;
             continue;
         }
 
         total_seq += sequence_length;
         total_kmers += numkmers;
+
         //Output spaced kmer vector for current sequence
-        if (!opts.seqmode) {
+        if (!opts.gmode) {
             //Move sequence to output buffer
-            if (!belly_loadbuff(smerhash, opts.scale, sv_idx, smerlist, jdata)) {
-                fprintf(stderr, "\tERROR: Failed to output spaced kmer vector.\n");
+            if (!belly_loadbuff(smerhash, opts.raw, v_idx, smerlist, output)) {
+                fprintf(stderr, "\tERROR: Failed to load output buffer.\n");
                 total_seq = 0;
                 goto exit;
             }
-            sv_idx += 1;
+            v_idx += kh_size(smerhash->h);
             hash_reset(smerhash->h, smerhash->k);
             //If buffer is full, dump to output file
             if (!((n+1)%jdata->buffersize)) {
-                fprintf(stderr, "DUMPING VECTORS %ld %lu.\n", n, sv_idx);
-                sv_idx = 0;
+                fprintf(stderr, "\tINFO: Dumping vectors.\n");
+                if (!belly_dump(jdata, opts, v_idx, kh_size(smerhash->h))) {
+                    fprintf(stderr, "\tERROR: Failed to write output vectors.\n");
+                    total_seq = 0;
+                    goto exit;
+                }
+                v_idx = 0;
                 //TODO implement dump vector contents to output file in desirted format
                 //belly_dump();
             }
@@ -419,23 +428,29 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         total_seq = 0;
         goto exit;
     }
-    //Output spaced kmer vector for file
-    if (opts.seqmode) {
-        sv_idx = 0;
-        //belly_extract_vector(smerhash, hash_size, smerlist, hash_vector);
-        //if (!belly_scale(hash_vector,
-        //                 hash_size,
-        //                 jdata->soutput,
-        //                 &sv_idx)) {
-        //    total_seq = 0;
-        //    goto exit;
-        //}
+
+    if (opts.gmode) {
+        v_idx = 0;
+        //write output file
+    }
+    else {
+        if (!belly_dump(jdata, opts, v_idx, v_idx/kh_size(smerhash->h))) {
+            fprintf(stderr, "\tERROR: Failed to write output vectors.\n");
+            total_seq = 0;
+            goto exit;
+        }
+    }
+
+    if (!belly_ofiletail(jdata->output, &n)) {
+        fprintf(stderr, "\tERROR: Failed to finish output file.\n");
+        return 0;
     }
 
     //Log info
-    fprintf(stderr,"%lu total reads.\n",n);
-    fprintf(stderr, "%lu total kmers\n", total_kmers);
-    fprintf(stderr, "%lu total bases\n", total_seq);
+    fprintf(stderr, "\tINFO: Finished vectorizing sequence data. %lu\n",v_idx);
+    fprintf(stderr,"\t\t%lu total reads.\n",n);
+    fprintf(stderr, "\t\t%lu total kmers\n", total_kmers);
+    fprintf(stderr, "\t\t%lu total bases\n", total_seq);
     exit:
         free(jdata->soutput);
         return(total_seq);
@@ -483,13 +498,25 @@ void belly_extract_vector(jellyhash *smerhash,
 }
 
 
-int belly_minmax(unsigned int *vector, int length, int *min, int *max)
+int belly_minmax(jellyhash *smerhash,
+                 unsigned int *min,
+                 unsigned int *diff,
+                 SpKMER *smerlist)
 {
-    *min = vector[0];
-    *max = vector[0];
-    for (unsigned long i = 1; i < length; i++) {
-        if (vector[i] < *min) *min  = vector[i];
-        else if (vector[i] > *max) *max = vector[i];
+    *min = -1;
+    unsigned int max = 0;
+    unsigned int val;
+    for (unsigned long int i = 0; i < kh_size(smerhash->h); i++) {
+        smerhash->k = kh_get(smer, smerhash->h, smerlist[i].key);
+        val = kh_val(smerhash->h, smerhash->k);
+        if (val < *min) *min  = val;
+        else if (val > max) max = val;
+    }
+    //TODO Check max > min
+    *diff = max - *min;
+    if (*diff == 0) {
+        *diff = 1;
+        *min = 0;
     }
     return 1;
 }
@@ -501,14 +528,14 @@ int belly_scale(unsigned int *vec,
                 unsigned long int *svidx)
 {
     //TODO bundle diff, min and tmp into struct and pass by reference
-    unsigned int diff;
-    unsigned int min;
-    unsigned int max;
+    unsigned int diff = 0;
+    unsigned int min = 0;
+    unsigned int max = 0;
 
-    if (!belly_minmax(vec, len, &min, &max)) {
-        fprintf(stderr ,"\tERROR: Could not determine min and max vector values.\n");
-    }
-    diff = max - min;
+    //if (!belly_minmax(vec, len, &min, &max)) {
+    //    fprintf(stderr ,"\tERROR: Could not determine min and max vector values.\n");
+    //}
+    //diff = max - min;
     //TODO what to do when this happens?
     if (diff == 0) {
         fprintf(stderr, "\tERROR: Could not scale vector. min == max");
@@ -532,7 +559,7 @@ int belly_scale(unsigned int *vec,
 void belly_exit(gzFile fp,
                 kseq_t *seq,
                 jellyhash smerhash,
-                jellydata *info,
+                jellydata *jdata,
                 SpKMER *smerlist)
 {
   // Close zlib file handler
@@ -546,22 +573,10 @@ void belly_exit(gzFile fp,
     free(smerlist[i].key);
   }
   free(smerlist);
-  free(info->kmer_seq);
-  free(info->smer_seq);
-  free(info->mask);
-  fclose(info->output);
-}
-
-
-unsigned int belly_max(unsigned int *vector, int length)
-{
-    return vector[length - 1];
-}
-
-
-unsigned int belly_min(unsigned int *vector)
-{
-    return vector[0];
+  free(jdata->kmer_seq);
+  free(jdata->smer_seq);
+  free(jdata->mask);
+  fclose(jdata->output);
 }
 
 
@@ -579,21 +594,122 @@ void belly_vectorout(float *vector, unsigned int size, FILE *outfile)
 }
 
 
+int belly_loadbuff(jellyhash *smerhash,
+                   int raw,
+                   unsigned long int v_idx,
+                   SpKMER *smerlist,
+                   void *buff)
+{
+    if (raw) {
+        unsigned int *tmp = buff;
+        for (unsigned long int i = 0; i < kh_size(smerhash->h); i++) {
+            smerhash->k = kh_get(smer, smerhash->h, smerlist[i].key);
+            tmp[i + v_idx] = kh_val(smerhash->h, smerhash->k);
+        }
+    }
+    else {
+        float *tmp = buff;
+        unsigned int min;
+        unsigned int diff;
+        unsigned int val;
+        belly_minmax(smerhash, &min, &diff, smerlist);
+        for (unsigned long int i = 0; i < kh_size(smerhash->h); i++) {
+            smerhash->k = kh_get(smer, smerhash->h, smerlist[i].key);
+            val = kh_val(smerhash->h, smerhash->k);
+            tmp[i + v_idx] =  (float)val - (float)min / (float)diff;
+        }
+    }
+
+    return 1;
+}
+
+
+int belly_dump(jellydata *jdata, jellyopts opts, unsigned long int v_idx, unsigned int size)
+{
+    //TODO Do not dump all of buffer as not all of it will be full when function is called
+    if (opts.binout) {
+        if (opts.raw) {
+            fwrite(jdata->routput,
+                   sizeof(unsigned int),
+                   jdata->buffersize*size,
+                   jdata->output);
+        }
+        else {
+            fwrite(jdata->soutput,
+                   sizeof(float),
+                   jdata->buffersize*size,
+                   jdata->output);
+        }
+    }
+    for (unsigned int i = 0; i < v_idx; i++) {
+
+    }
+    return 1;
+}
+
+
 int randint(int max)
 {
     return 0 + rand() / (RAND_MAX / (max - 0 + 1) + 1);
 }
 
 
-int belly_loadbuff(jellyhash *smerhash,
-                 int scale,
-                 unsigned long int sv_idx,
-                 SpKMER *smerlist,
-                 jellydata *jdata) {
-    for (unsigned long int i = 0; i < kh_size(smerhash->h); i++) {
-        smerhash->k = kh_get(smer, smerhash->h, smerlist[i].key);
-        jdata->soutput[i] = kh_val(smerhash->h, smerhash->k);
-        if (i == 10) break;
+int belly_checkfile(FILE *fp)
+{
+    //Check for output file
+    if (!fp) {
+        fprintf(stderr, "\tERROR: Could not open output file.\n");
+        if (errno == 13 || errno == 21) {
+            fprintf(stderr, "\t\tPermission denied %d\n", errno);
+        }
+        else if (errno == 21) {
+            fprintf(stderr, "\t\tFilename is a directory %d\n", errno);
+        }
+        return 0;
     }
     return 1;
 }
+
+
+int belly_ofileinit(jellydata *jdata)
+{
+    char *head_start[] = {0,0,0,0,0,0,0};
+    char *spacer[] = {0,0,0};
+    char tail[] = {5,4,3,2,1};
+    int bytenum = 0;
+    bytenum += fwrite(head_start, 1, 7, jdata->output);
+    bytenum += fwrite(&(jdata->smerlength), sizeof(int), 1, jdata->output);
+    bytenum += fwrite(spacer, 1, 3, jdata->output);
+    bytenum += fwrite(&(jdata->kmerlength), sizeof(int), 1, jdata->output);
+    bytenum += fwrite(spacer, 1, 3, jdata->output);
+    bytenum += fwrite(&tail, 1, 5, jdata->output);
+    if (bytenum != 20) {
+        return 0;
+    }
+    return 1;
+}
+
+
+int belly_ofiletail(FILE *fp, unsigned long int *n)
+{
+    char *spacer[] = {0,0,0,0};
+    char tail[] = {0,0,0,0,1};
+    int bytenum = 0;
+    bytenum += fwrite(spacer, 1, 4, fp);
+    bytenum += fwrite(n, sizeof(unsigned long int), 1, fp);
+    bytenum += fwrite(&tail, 1, 5, fp);
+    if (bytenum != 10) {
+        return 0;
+    }
+    return 1;
+}
+//unsigned int belly_max(unsigned int *vector, int length)
+//{
+//    return vector[length - 1];
+//}
+
+
+//unsigned int belly_min(unsigned int *vector)
+//{
+//    return vector[0];
+//}

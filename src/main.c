@@ -97,8 +97,8 @@ void usage()
     fprintf(stderr,"\t  \t\tform.\n\n");
     fprintf(stderr,"\t-s <filename>\tSpaced kmer file. Binary file containing the masks\n");
     fprintf(stderr,"\t  \t\tto be used. Refer to manual for detailed documentation.\n\n");
-    fprintf(stderr,"\t-C \t\tCanonical mode. Lexicographically smallest kmer is counted.\n");
-    fprintf(stderr,"\t  \t\tSet this flag when analyzing sequencing reads. (OFF)\n\n");
+    //fprintf(stderr,"\t-C \t\tCanonical mode. Lexicographically smallest kmer is counted.\n");
+    //fprintf(stderr,"\t  \t\tSet this flag when analyzing sequencing reads. (OFF)\n\n");
     fprintf(stderr,"\t-q <int>\tNumber of spaced kmer vectors to keep in memory before\n");
     fprintf(stderr,"\t  \t\twritting them to the outputfile. (-q 100)\n\n");
     fprintf(stderr,"\t-o <filename>\tOutput filename. (-o /dev/stdout)\n\n");
@@ -117,9 +117,9 @@ void read_opts(int argc, char **argv, jellyopts *opts)
     opts->outputfilename = NULL;
     opts->mode = 0;
     opts->buffersize = 100;
-    opts->omode = "w";
-    opts->scale = 1;
-    opts->seqmode = 0;
+    opts->binout = 0;
+    opts->raw = 0;
+    opts->gmode = 0;
     int elem;
     while (( elem = getopt(argc, argv, "f:s:Chq:o:brl") ) >= 0) {
         switch(elem) {
@@ -139,13 +139,13 @@ void read_opts(int argc, char **argv, jellyopts *opts)
             opts->outputfilename = optarg;
             break;
         case 'b':
-            opts->omode = "wb";
+            opts->binout = 1;
             break;
         case 'r':
-            opts->scale = 0;
+            opts->raw = 1;
             break;
         case 'l':
-            opts->seqmode = 1;
+            opts->gmode = 1;
             break;
         case 'h':
             usage();
@@ -174,9 +174,9 @@ void print_opts(jellyopts opts)
     fprintf(stderr,"\toutput file:\t\t%s\n", opts.outputfilename);
     fprintf(stderr,"\tkmer mode:\t\t%s\n", (opts.mode==0)?"non-canonical":"canonical");
     fprintf(stderr,"\tbuffer size:\t\t%d\n", opts.buffersize);
-    fprintf(stderr,"\tgenome mode:\t\t%s\n", (opts.seqmode==1)?"ON":"OFF");
-    fprintf(stderr,"\toutput format:\t\t%s\n", (strcmp(opts.omode,"w")==0)?"text":"binary");
-    fprintf(stderr,"\tscaled output:\t\t%s\n", (opts.scale==1)?"ON":"OFF");
+    fprintf(stderr,"\tgenome mode:\t\t%s\n", (opts.gmode==1)?"ON":"OFF");
+    fprintf(stderr,"\toutput format:\t\t%s\n", (opts.binout==0)?"text":"binary");
+    fprintf(stderr,"\tscaled output:\t\t%s\n", (opts.raw==1)?"ON":"OFF");
 }
 
 

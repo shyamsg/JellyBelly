@@ -33,10 +33,6 @@ SOFTWARE.
 
 #include "main.h"
 
-//TODO Document
-//#define pair_lt(a, b) ((strcmp((a).key,(b).key) < 0)?1:0)
-//#define pair_sc(a, b) ((a) < (b))
-
 
 //Initialize Heng Li's khash
 KHASH_MAP_INIT_STR(smer, unsigned int)
@@ -183,11 +179,24 @@ void belly_vectorout(float *vector,
                      unsigned int size,
                      FILE *outfile);
 
-int belly_minmax(unsigned int *vector, int length, int *min, int *max);
-
+int belly_minmax(jellyhash *smerhash,
+                 unsigned int *min,
+                 unsigned int *diff,
+                 SpKMER *smerlist);
 
 int belly_loadbuff(jellyhash *smerhash,
-                 int scale,
-                 unsigned long int sv_idx,
-                 SpKMER *smerlist,
-                 jellydata *jdata);
+                   int raw,
+                   unsigned long int v_idx,
+                   SpKMER *smerlist,
+                   void *buff);
+
+
+int belly_dump(jellydata *jdata, jellyopts opts, unsigned long int v_idx, unsigned int size);
+
+
+int belly_checkfile(FILE *fp);
+
+
+int belly_ofileinit(jellydata *jdata);
+
+int belly_ofiletail(FILE *fp, unsigned long int *n);
