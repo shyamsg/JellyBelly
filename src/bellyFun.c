@@ -361,6 +361,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     int sequence_length;
     unsigned long int n = 0;
     unsigned long int total_kmers = 0;
+    unsigned int size = kh_size(smerhash->h)*(jdata->buffersize);
     void *output;
     if (opts.raw) {
         output = jdata->routput;
@@ -410,7 +411,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
             //If buffer is full, dump to output file
             if (!((n+1)%jdata->buffersize)) {
                 fprintf(stderr, "\tINFO: Dumping vectors.\n");
-                if (!belly_dump(jdata, opts, v_idx, kh_size(smerhash->h))) {
+                if (!belly_dump(jdata, opts, v_idx, size)) {
                     fprintf(stderr, "\tERROR: Failed to write output vectors.\n");
                     total_seq = 0;
                     goto exit;
@@ -434,7 +435,8 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         //write output file
     }
     else {
-        if (!belly_dump(jdata, opts, v_idx, v_idx/kh_size(smerhash->h))) {
+        fprintf(stderr, "\tINFO: Dumping vectors.\n");
+        if (!belly_dump(jdata, opts, v_idx, v_idx)) {
             fprintf(stderr, "\tERROR: Failed to write output vectors.\n");
             total_seq = 0;
             goto exit;
@@ -626,21 +628,21 @@ int belly_loadbuff(jellyhash *smerhash,
 
 int belly_dump(jellydata *jdata, jellyopts opts, unsigned long int v_idx, unsigned int size)
 {
-    //TODO Do not dump all of buffer as not all of it will be full when function is called
     if (opts.binout) {
         if (opts.raw) {
             fwrite(jdata->routput,
                    sizeof(unsigned int),
-                   jdata->buffersize*size,
+                   size,
                    jdata->output);
         }
         else {
             fwrite(jdata->soutput,
                    sizeof(float),
-                   jdata->buffersize*size,
+                   size,
                    jdata->output);
         }
     }
+    //TODO implement
     for (unsigned int i = 0; i < v_idx; i++) {
 
     }
