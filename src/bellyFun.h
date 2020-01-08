@@ -60,6 +60,7 @@ typedef struct {
     int kmerlength; //kmer length
     char *smer_seq; //spaced kmer sequence
     int smerlength; //spaced kmer length
+    unsigned long hashsize;
     unsigned long int smernum;
     //Output variables
     int *mask; //spaced kmer mask positions
@@ -164,16 +165,12 @@ int belly_scale(unsigned int *vec,
                 float *scvec,
                 unsigned long int *svidx);
 
-
 unsigned int belly_max(unsigned int *vector,
                        int length);
 
-
 unsigned int belly_min(unsigned int *vector);
 
-
-int belly_allocateinfo(jellydata *info, int scale);
-
+int belly_allocateinfo(jellydata *jdata, int raw, int gmode);
 
 void belly_vectorout(float *vector,
                      unsigned int size,
@@ -190,13 +187,14 @@ int belly_loadbuff(jellyhash *smerhash,
                    SpKMER *smerlist,
                    void *buff);
 
-
 int belly_dump(jellydata *jdata, jellyopts opts, unsigned long int v_idx, unsigned int size);
 
-
 int belly_checkfile(FILE *fp);
-
 
 int belly_ofileinit(jellydata *jdata);
 
 int belly_ofiletail(FILE *fp, unsigned long int *n);
+
+int belly_writescale(jellydata *jdata, unsigned long nsamples);
+
+int belly_writeraw(jellydata *jdata, unsigned long nsamples);

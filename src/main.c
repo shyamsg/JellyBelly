@@ -176,7 +176,7 @@ void print_opts(jellyopts opts)
     fprintf(stderr,"\tbuffer size:\t\t%d\n", opts.buffersize);
     fprintf(stderr,"\tgenome mode:\t\t%s\n", (opts.gmode==1)?"ON":"OFF");
     fprintf(stderr,"\toutput format:\t\t%s\n", (opts.binout==0)?"text":"binary");
-    fprintf(stderr,"\tscaled output:\t\t%s\n", (opts.raw==1)?"ON":"OFF");
+    fprintf(stderr,"\traw output:\t\t%s\n", (opts.raw==1)?"ON":"OFF");
 }
 
 
