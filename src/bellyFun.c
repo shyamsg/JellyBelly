@@ -37,12 +37,15 @@ SOFTWARE.
 
 int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
 {
+    fprintf(stderr, "Running JellyBelly.\n");
     srand(time(NULL));
+    int ret;
     //Initialize JellyBelly's data structures
     jellydata jdata;
     if (!belly_jellyinit(&jdata, opts, smer_file)) {
         fprintf(stderr, "\tERROR: Could not initialize JellyBelly.\n");
-        return 0;
+        ret = -1;
+        goto exit;
     }
 
 
@@ -51,7 +54,8 @@ int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
     jellyhash smerhash;
     if (!belly_hashinit(&smerlist, &smerhash, jdata)) {
         fprintf(stderr, "\tERROR: Could not initialize hash table.\n");
-        return 0;
+        ret = -1;
+        goto exit;
     }
 
     //Open sequence file
@@ -59,17 +63,19 @@ int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
     seq = kseq_init(fp);
     if (!seq) {
         fprintf(stderr,"\tERROR: Could not open sequence file.\n");
-        return 0;
+        ret = -1;
+        goto exit;
     }
 
     if ( !belly_extract_spaces(seq, &jdata, &smerhash, smerlist, opts)) {
       fprintf(stderr, "\tERROR: Failed to count kmers.\n");
-      //TODO mem leak here
-      return 0;
+      ret = -1;
+      goto exit;
     }
-
-    belly_exit(fp, seq, smerhash, &jdata, smerlist);
-    return 1;
+    ret = 1;
+    exit:
+      belly_exit(fp, seq, smerhash, &jdata, smerlist);
+      return ret;
 }
 
 
@@ -88,7 +94,7 @@ int belly_jellyinit(jellydata *jdata, jellyopts opts, FILE *smer_file)
         fprintf(stderr, "\tERROR: Corrupted bin file.\n");
         return 0;
     }
-    fprintf(stderr,"\tkmer %d smer %d snum %lu\n",
+    fprintf(stderr,"\tINFO: kmer size: %d, smer size: %d snum %lu\n",
             jdata->kmerlength,
             jdata->smerlength,
             jdata->smernum);
@@ -186,7 +192,6 @@ int belly_allocateinfo(jellydata *jdata, int raw, int gmode)
 
     unsigned int size = jdata->hashsize;
     if (gmode) {
-        fprintf(stderr, "gmode alloc %u\n", size);
         if (raw) {
             jdata->routput = malloc(size*sizeof(unsigned int));
             if (!jdata->routput) {
@@ -303,7 +308,7 @@ char *get_smer(char *array, int kmerlength, int smernum)
 int belly_hashinit(SpKMER **smerlist, jellyhash *smerhash, jellydata jdata)
 {
     smerhash->hashsize = pow(4, jdata.smerlength);
-    fprintf(stderr, "Generating %lu spaced kmers\n", smerhash->hashsize);
+    fprintf(stderr, "\tINFO: Generating %lu spaced kmers\n", smerhash->hashsize);
 
     *smerlist = malloc((smerhash->hashsize)*sizeof(SpKMER));
     if (!smerlist) {
@@ -312,10 +317,9 @@ int belly_hashinit(SpKMER **smerlist, jellyhash *smerhash, jellydata jdata)
     }
     unsigned int smer_idx = 0;
     belly_fill_smer_list(*smerlist, jdata, 0, &smer_idx);
-    fprintf(stderr, "smer_index: %u\n", smer_idx);
     //Initialize hash table and fill with spaced kmers
     hash_declare(smerhash);
-    fprintf(stderr,"building hash table\n");
+    fprintf(stderr,"\tINFO: Building hash table\n");
     if (smerhash->hashsize != belly_hash_fill(smerhash, jdata, *smerlist)) {
         fprintf(stderr,"ERROR: Could not initilize hash\n");
         return 0;
@@ -339,7 +343,7 @@ unsigned int belly_hash_fill(jellyhash *smerhash,
 
     // Report hash size (number of elements in hash, must be equal to 4^smerlen)
     unsigned long size = jdata.hashsize;
-    fprintf(stderr,"hash size is %lu\n",size);
+    fprintf(stderr,"\tINFO: Hash table size is %lu\n",size);
     if (size != pow(4, jdata.smerlength)) {
         fprintf(stderr,"Error at generating spaced kmer hash.\n");
         return 0;
@@ -480,12 +484,11 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     }
 
     //Log info
-    fprintf(stderr, "\tINFO: Finished vectorizing sequence data. %lu\n",v_idx);
+    fprintf(stderr, "\tINFO: Finished vectorizing sequence data.\n");
     fprintf(stderr,"\t\t%lu total reads.\n",n);
     fprintf(stderr, "\t\t%lu total kmers\n", total_kmers);
     fprintf(stderr, "\t\t%lu total bases\n", total_seq);
     exit:
-        free(jdata->soutput);
         return(total_seq);
 }
 
@@ -563,6 +566,8 @@ void belly_exit(gzFile fp,
   free(jdata->kmer_seq);
   free(jdata->smer_seq);
   free(jdata->mask);
+  free(jdata->soutput);
+  free(jdata->routput);
   fclose(jdata->output);
 }
 
@@ -613,7 +618,6 @@ int belly_dump(jellydata *jdata,
                    sizeof(float),
                    size,
                    jdata->output);
-            fprintf(stderr, "bin scaled out %u\n", size);
         }
         //TODO check for fwrite errors
         return 1;

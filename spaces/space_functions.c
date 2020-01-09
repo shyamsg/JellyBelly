@@ -19,7 +19,7 @@ void computeSpaces(int kmerlen, int smerlen)
     //TODO make shure numbers check. min(kmerlen) 3 min(smerlen) 3
     unsigned long long smernum = mchoosen(kmerlen, smerlen);
     if(smernum > 300000000){
-        fprintf(stderr,"Excesively large amount of space kmers.\nWill not compute.\n");
+        fprintf(stderr,"Excesively large amount of space kmers: %llu.\nWill not compute.\n", smernum);
         exit(-1);
     }
     fprintf(stderr,"%lld spaced kmers will be generated\n",smernum);
