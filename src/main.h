@@ -36,6 +36,8 @@ typedef struct {
 
 void usage();
 
+void print_info();
+
 void read_opts(int argc, char **argv, jellyopts *opts);
 
 void print_opts(jellyopts opts);

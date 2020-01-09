@@ -40,18 +40,21 @@ JetBelly - Extract and bin kmers from fasta sequences of fastq sequencing files
 
 int main(int argc, char **argv)
 {
+    print_info();
+
     jellyopts opts;
-    gzFile fp;
-    FILE *smer_file;
-
-    // Check for correct number of arguments
-    if (argc < 5) {
-      fprintf(stderr,"Not enough parameters.\n");
-      usage();
-    }
-
     // Read options
     read_opts(argc, argv, &opts);
+
+    // Check for correct number of arguments
+    //if (argc < 5) {
+    //    fprintf(stderr,"\tERROR: Not enough parameters.\n");
+    //    usage();
+    //}
+
+
+    gzFile fp;
+    FILE *smer_file;
 
     // Read from stdin
     if (strcmp( opts.seqfilename, "-") == 0) {
@@ -86,7 +89,7 @@ int main(int argc, char **argv)
 
 void usage()
 {
-    fprintf(stderr,"Usage:\n");
+    fprintf(stderr,"\n\nUsage:\n");
     fprintf(stderr,"\tJellyBelly [options] ");
     fprintf(stderr,"-f <sequence file> -s <spacedkmer file>\n\n");
     fprintf(stderr,"Options:\n\n");
@@ -106,7 +109,7 @@ void usage()
     fprintf(stderr,"\t-l \t\tGenome mode. A single spaced kmer vector is\n");
     fprintf(stderr,"\t  \t\tcomputed for all input sequences. (OFF)\n\n");
     fprintf(stderr,"\t-h \t\tThis help  message.\n\n");
-    exit(1);
+    exit(-1);
 }
 
 
@@ -169,14 +172,14 @@ void read_opts(int argc, char **argv, jellyopts *opts)
 
 void print_opts(jellyopts opts)
 {
-    fprintf(stderr,"\tsequence file:\t\t%s\n", opts.seqfilename);
-    fprintf(stderr,"\tspaced kmer file:\t%s\n", opts.smerfilename);
-    fprintf(stderr,"\toutput file:\t\t%s\n", opts.outputfilename);
-    fprintf(stderr,"\tkmer mode:\t\t%s\n", (opts.mode==0)?"non-canonical":"canonical");
-    fprintf(stderr,"\tbuffer size:\t\t%d\n", opts.buffersize);
-    fprintf(stderr,"\tgenome mode:\t\t%s\n", (opts.gmode==1)?"ON":"OFF");
-    fprintf(stderr,"\toutput format:\t\t%s\n", (opts.binout==0)?"text":"binary");
-    fprintf(stderr,"\traw output:\t\t%s\n", (opts.raw==1)?"ON":"OFF");
+    fprintf(stderr,"\tINFO: sequence file:\t\t%s\n", opts.seqfilename);
+    fprintf(stderr,"\tINFO: spaced kmer file:\t\t%s\n", opts.smerfilename);
+    fprintf(stderr,"\tINFO: output file:\t\t%s\n", opts.outputfilename);
+    fprintf(stderr,"\tINFO: kmer mode:\t\t%s\n", (opts.mode==0)?"non-canonical":"canonical");
+    fprintf(stderr,"\tINFO: buffer size:\t\t%d\n", opts.buffersize);
+    fprintf(stderr,"\tINFO: genome mode:\t\t%s\n", (opts.gmode==1)?"ON":"OFF");
+    fprintf(stderr,"\tINFO: output format:\t\t%s\n", (opts.binout==0)?"text":"binary");
+    fprintf(stderr,"\tINFO: raw output:\t\t%s\n\n", (opts.raw==1)?"ON":"OFF");
 }
 
 
@@ -193,4 +196,12 @@ int check_stdin(char *filename)
     free(fpoll);
     fclose(fp);
     return stdinpoll;
+}
+
+void print_info()
+{
+    fprintf(stderr, "JellyBelly v0.0\n");
+    fprintf(stderr, "\tMIT License\n");
+    fprintf(stderr, "\tCopyright (c) 2019 Julian Regalado [julian.perez@bio.ku.dk]\n");
+    fprintf(stderr, "\thttps://github.com/7PintsOfCherryGarcia/JellyBelly\n\n");
 }

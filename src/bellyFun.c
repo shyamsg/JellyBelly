@@ -33,7 +33,7 @@ SOFTWARE.
 #include "bellyHash.h"
 #include "bellyMisc.h"
 
-
+//TODO Memory leak when using -r(raw output option)
 
 int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
 {
@@ -186,6 +186,7 @@ int belly_allocateinfo(jellydata *jdata, int raw, int gmode)
 
     unsigned int size = jdata->hashsize;
     if (gmode) {
+        fprintf(stderr, "gmode alloc %u\n", size);
         if (raw) {
             jdata->routput = malloc(size*sizeof(unsigned int));
             if (!jdata->routput) {
@@ -448,23 +449,22 @@ unsigned long belly_extract_spaces(kseq_t *seq,
         total_seq = 0;
         goto exit;
     }
+    //TODO: Better control of output writing logic. Not understandable at all
 
+    fprintf(stderr, "\tINFO: Dumping vectors.\n");
     if (opts.gmode) {
-        fprintf(stderr, "\tINFO: Dumping vectors.\n");
         if (!belly_loadbuff(smerhash, opts.raw, v_idx, smerlist, output)) {
             fprintf(stderr, "\tERROR: Failed to load output buffer.\n");
             total_seq = 0;
             goto exit;
         }
-        if (!belly_dump(jdata, opts, 1, v_idx)) {
+        if (!belly_dump(jdata, opts, 1, kh_size(smerhash->h))) {
             fprintf(stderr, "\tERROR: Failed to write output vectors.\n");
             total_seq = 0;
             goto exit;
         }
-        //write output file
     }
     else {
-        fprintf(stderr, "\tINFO: Dumping vectors.\n");
         if (!belly_dump(jdata, opts, v_idx/(jdata->hashsize), v_idx)) {
             fprintf(stderr, "\tERROR: Failed to write output vectors.\n");
             total_seq = 0;
@@ -519,18 +519,6 @@ unsigned long int belly_count(char *seq,
 }
 
 
-void belly_extract_vector(jellyhash *smerhash,
-                          unsigned long vector_length,
-                          SpKMER *smerlist,
-                          unsigned int *vector)
-{
-    for (unsigned long i = 0; i < vector_length; i++) {
-        smerhash->k = kh_get(smer, smerhash->h, smerlist[i].key);
-        vector[i] = kh_val(smerhash->h, smerhash->k);
-    }
-}
-
-
 int belly_minmax(jellyhash *smerhash,
                  unsigned int *min,
                  unsigned int *diff,
@@ -551,40 +539,6 @@ int belly_minmax(jellyhash *smerhash,
         *diff = 1;
         *min = 0;
     }
-    return 1;
-}
-
-
-int belly_scale(unsigned int *vec,
-                unsigned int len,
-                float *scvec,
-                unsigned long int *svidx)
-{
-    //TODO bundle diff, min and tmp into struct and pass by reference
-    unsigned int diff = 0;
-    unsigned int min = 0;
-    unsigned int max = 0;
-
-    //if (!belly_minmax(vec, len, &min, &max)) {
-    //    fprintf(stderr ,"\tERROR: Could not determine min and max vector values.\n");
-    //}
-    //diff = max - min;
-    //TODO what to do when this happens?
-    if (diff == 0) {
-        fprintf(stderr, "\tERROR: Could not scale vector. min == max");
-    }
-    fprintf(stderr,"min: %d\t max: %d\n", min, max);
-    for (unsigned long i = 0; i < len; i++)
-        scvec[(*svidx*len) + i] = (((float)vec[i] - (float)min) / (float)diff);
-    //TODO do the actual printing
-    //if (*svidx == 0) {
-    //    *svidx=0;
-    //    fprintf(stderr,"Dumping\n");
-    //    belly_vectorout(scvec, len, stdout);
-    //}
-    //else {
-    //    *svidx += 1;
-    //}
     return 1;
 }
 
@@ -619,7 +573,6 @@ int belly_loadbuff(jellyhash *smerhash,
                    SpKMER *smerlist,
                    void *buff)
 {
-    //TODO problems with declaring tmp
     if (raw) {
         unsigned int *tmp = buff;
         for (unsigned long int i = 0; i < kh_size(smerhash->h); i++) {
@@ -656,14 +609,16 @@ int belly_dump(jellydata *jdata,
                    jdata->output);
         }
         else {
-            fwrite(jdata->soutput,
+            int i = fwrite(jdata->soutput,
                    sizeof(float),
                    size,
                    jdata->output);
+            fprintf(stderr, "bin scaled out %u\n", size);
         }
         //TODO check for fwrite errors
         return 1;
     }
+
     if (opts.raw) {
         belly_writeraw(jdata, nsamples);
     }
