@@ -50,13 +50,14 @@
 
 	-o <filename>	Output filename. (-o /dev/stdout)
 
+	-b 		Binary output. (OFF)
+
 	-r 		Raw output: spaced kmer counts (OFF)
 
 	-l 		Genome mode. A single spaced kmer vector is
 	  		computed for all input sequences. (OFF)
 
 	-h 		This help  message.
-
 # Usage
 
 ## Input Data
