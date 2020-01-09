@@ -105,6 +105,7 @@ void usage()
     fprintf(stderr,"\t-q <int>\tNumber of spaced kmer vectors to keep in memory before\n");
     fprintf(stderr,"\t  \t\twritting them to the outputfile. (-q 100)\n\n");
     fprintf(stderr,"\t-o <filename>\tOutput filename. (-o /dev/stdout)\n\n");
+    fprintf(stderr,"\t-b \t\tBinary output. (OFF)\n\n");
     fprintf(stderr,"\t-r \t\tRaw output: spaced kmer counts (OFF)\n\n");
     fprintf(stderr,"\t-l \t\tGenome mode. A single spaced kmer vector is\n");
     fprintf(stderr,"\t  \t\tcomputed for all input sequences. (OFF)\n\n");
