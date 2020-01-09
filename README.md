@@ -23,37 +23,44 @@
 
 # Get and compile
     git clone --recursive https://github.com/7PintsOfCherryGarcia/JellyBelly.git
-    cd JellyBelly/build
+    cd JellyBelly
+    mkdir build; cd build
     cmake ..
     make
 
 
 # Run
 
-     Usage:
+    Usage:
+	JellyBelly [options] -f <sequence file> -s <spacedkmer file>
 
-	 JellyBelly [options] -f <sequence file> -s <spacedkmer file>
+    Options:
 
-     Options:
-
-    -f <filename>	Sequence file. fasta/q file with sequences or
+	-f <filename>	Sequence file. fasta/q file with sequences or
 	  		sequencing reads. Can be gziped. provide "-" if
 	  		reading from stdin. If using sequencing data eg.
 	  		illumina reads, provide the -C flag to use canonical
 	  		form.
 
-    -s <filename>	Spaced kmer file. Binary file containing the masks
+	-s <filename>	Spaced kmer file. Binary file containing the masks
 	  		to be used. Refer to manual for detailed documentation.
 
-    -C 		Canonical mode. Lexicographically smallest kmer is counted.
-	  		Set this flag when analyzing sequencing reads.
+	-q <int>	Number of spaced kmer vectors to keep in memory before
+	  		writting them to the outputfile. (-q 100)
 
-    -h 		        This help  message.
+	-o <filename>	Output filename. (-o /dev/stdout)
+
+	-r 		Raw output: spaced kmer counts (OFF)
+
+	-l 		Genome mode. A single spaced kmer vector is
+	  		computed for all input sequences. (OFF)
+
+	-h 		This help  message.
 
 # Usage
 
 ## Input Data
-  JellyBelly can be executed on any type of DNA nucleotide data in the FASTA/FASTQ format. There is only **one** thing to consider. If you are runing JellyBelly on **sequencing reads**, make shure to set the **-C** flag. This will have a two fold efect:
+  JellyBelly can be executed on any type of DNA nucleotide data in the FASTA/FASTQ format. There is only **one** thing to consider. If you are runing JellyBelly on **sequencing reads**, make shure to set the **-C** flag (not yet implemented). This will have a two fold efect:
   
   1. The entire sequencing library will be encoded in a single spaced kmer vector.
   1. Only lexicographically smallest kmers will be computed. Reads coming from random fragments can be from either the forward or reverse strand.
@@ -74,7 +81,7 @@
     
     0.245	0.014	0.547	...    0.436
   
-  If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector you will have to concatenate them. I will soon add another option for computing a single vector from a set of sequences.
+  If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector make sure to use the -l flag (genome mode).
   
   
 
@@ -92,7 +99,7 @@
   
                                                    A  GT    T == AGTT
 
-Brieafly, given a kmer size K and a spaced kmer size S, there are S choose K different ways of selecting S positions out of a kmer of length K. JellyBelly includes another program to compute these masks called create_spaces. create_spaces will do a brute force search of all possible mask configurations. Subsequently, only the most entropic(dissorderly) masks are kept.
+Briefly, given a kmer size K and a spaced kmer size S, there are S choose K different ways of selecting S positions out of a kmer of length K. JellyBelly includes another program to compute these masks called create_spaces. create_spaces will do a brute force search of all possible mask configurations. Subsequently, only the most entropic(dissorderly) masks are kept.
 
 To create a spaced kmer file simply run create_spaces with your desired kmer size and spaced kmer file.
 
@@ -146,7 +153,7 @@ build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euc
 * protein sequences
     * Currently not supported
 * Use of multiple threads
-    * The speed advantages of multithreading do not justify the resources I would have to invest in implementing it. Eventually this will be incorporated into JellyBelly
+    * The speed advantages of multithreading do not justify the resources I would have to invest in implementing it. Will be implemented in the near future.
 * Use in windows
     * No
 * I used this tool and don't know how to cite this work
