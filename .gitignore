@@ -11,3 +11,4 @@ create_spaces
 build/*.bin
 build/distMatrix
 tmp
+spaces/*.bin
