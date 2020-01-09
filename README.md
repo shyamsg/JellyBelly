@@ -69,23 +69,44 @@
   
   Assuming the sequencing library "my_seq.fq.gz", and the spaced kmer file "SpacedKmer_K10_S5.bin" you can run JellyBelly in the following way:
     
-    JellyBelly -f my_seq.fq.gz -s SpacedKmer_K10_S5.bin -C > output.txt
+    JellyBelly -f my_seq.fq.gz -s SpacedKmer_K10_S5.bin > output.txt
+
+output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts (number of spaced kmers) depends on the length of the number of ones in the spaced kmer mask and is equal to 4^S where S is the the number of ones in the mask.
   
-  output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts (number of spaced kmers) depends on the length of the number of ones in the spaced kmer mask and is equal to 4^S where S is the the number of ones in the mask.
-  
-  JellyBelly's output values are scaled spaced kmer counts ranging from 0 to 1 includisve. I will add another option for raw output (actual counts). Spaced kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
+  JellyBelly's output values are scaled spaced kmer counts ranging from 0 to 1 includisve. Spaced kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
   
   output.txt
   
       1	  2	  3	  	4^S
     
     0.245	0.014	0.547	...    0.436
-  
+
+## Output Data
+  JellyBelly writes its output to either stdout (default) or to a file indicated in the -o option. Data is written in text format as previously described. You can set the -b (binary output) option to make JellyBelly write the output vectors in binary form. This will make the output file much smaller.
+  If the -b option is set. JellyBelly will write additional information to the output file. This additional information consists in a header and a tail following this format:
+
+header | 26 bytes
+------------ | --------
+7 zero bytes  | All of JellyBelly's output binary files start with 7 bytes set to 0.
+4 bytes (int) | The next 4 bytes encode the spaced kmer length.
+3 zero bytes | After the spaced kmer length, an additional 3 bytes are set to 0.
+4 bytes (int) | The next 4 bytes encode the kmer length.
+3 zero bytes | After the kmer length, an additional 3 bytes are set to 0.
+5 bytes (5 chars) | The header ends in 5 bytes set to the values 5,4,3,2,1 respectively.
+
+After the header. You will find the vector values followed by a tail.
+
+tail | 17 bytes
+------------ | --------
+4 zero bytes | After vector data, 4 zero bytes are written.
+8 bytes (long)  | Number of samples in the current file.
+5 bytes (5 chars) | The tail end in 5 bytes set to the values 0,0,0,0,1 respectively.
+
+
+## Genome mode  
   If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector make sure to use the -l flag (genome mode).
   
   
-
-
 # spaced kmer file and how to compute them
   A core concept of JellyBelly is the use of a "mask" to only consider specific positions of a kmer. For example given the following kmer of length 10:
   
