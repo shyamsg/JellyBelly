@@ -622,7 +622,6 @@ int belly_dump(jellydata *jdata,
         //TODO check for fwrite errors
         return 1;
     }
-
     if (opts.raw) {
         belly_writeraw(jdata, nsamples);
     }
@@ -693,11 +692,11 @@ int belly_ofiletail(FILE *fp, unsigned long int *n)
 
 int belly_writescale(jellydata *jdata, unsigned long nsamples)
 {
-    int idx = 0;
+    size_t idx = 0;
     for (size_t i = 0; i < nsamples; i++) {
-        fprintf(jdata->output, "%.6f", jdata->soutput[i+idx]);
+        fprintf(jdata->output, "%.4f", jdata->soutput[idx]);
         for (size_t j = 1; j < jdata->hashsize; j++) {
-            fprintf(jdata->output, "\t%.6f", jdata->soutput[j+idx]);
+            fprintf(jdata->output, "\t%.4f", jdata->soutput[j+idx]);
         }
         fprintf(jdata->output, "\n");
         idx += jdata->hashsize;
@@ -707,9 +706,9 @@ int belly_writescale(jellydata *jdata, unsigned long nsamples)
 
 int belly_writeraw(jellydata *jdata, unsigned long nsamples)
 {
-    int idx = 0;
+    size_t idx = 0;
     for (size_t i = 0; i < nsamples; i++) {
-        fprintf(jdata->output, "%u", jdata->routput[i+idx]);
+        fprintf(jdata->output, "%u", jdata->routput[idx]);
         for (size_t j = 1; j < jdata->hashsize; j++) {
             fprintf(jdata->output, "\t%u", jdata->routput[j+idx]);
         }

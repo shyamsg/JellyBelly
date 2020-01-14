@@ -11,13 +11,11 @@ def main():
     if jellyvec.errflag:
         sys.exit(-1)
 
-    for vec in jellyvec.belly_loopvec():
-        print(vec.shape, vec[0:10])
+    #for vec in jellyvec.belly_loopvec():
+    #    print(vec.shape)
+    for vec in jellyvec.belly_loadvec(200):
+        print(vec.shape)
 
-    #for vec in jellyvec.belly_loadvec(4):
-    #    print(vec.shape, vec[0,0])
-
-    print(jellyvec.fp.tell())
 
 
 def belly_readhead(fp):
@@ -143,7 +141,7 @@ class JELLYVECS:
         for i in range(numcycles):
             totalvecs -= numsamples
             buff = self.fp.read(datalength)
-            vecarray = np.frombuffer(buff, dtype=np.float32)
+            vecarray = np.frombuffer(buff, dtype=np.int32)
             vecarray = np.reshape(vecarray, shape)
             yield vecarray
         if totalvecs > 0:

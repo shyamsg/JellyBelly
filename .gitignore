@@ -12,3 +12,5 @@ build/*.bin
 build/distMatrix
 tmp
 spaces/*.bin
+python/__pycache__
+python/*.bin
