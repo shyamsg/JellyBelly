@@ -28,13 +28,21 @@ jellyvec = JELLYVECS("binfilename")
 Is successfull, no errors should be raised.
 
 Instances of JELLYVECS have a couple of variables and methods: 
+
 Variables:
+        
         JELLYVECS.smerlength: Length of spaced kmer
+        
         JELLYVECS.kmerlength: Length of kmer
+        
         JELLYVECS.fmt: Data format (scaled or raw)
+       
         JELLYVECS.numsamples: Number of samples in binfile
+
 Methods:
+        
         JELLYVECS.belly_loopvec(): Generator of vectors one a time.
+        
         JELLYVECS.belly_loadvec(numsamples = 100): Generator of vectors in batches (DEFAULT 100 vectors per iteration) 
 
 There are two ways to manipulate JellyBelly's vectors. With JELLYVECS.belly_loopvec and with JELLYVECS.belly_loadvec
@@ -52,6 +60,8 @@ Vectors can be accessed in only one order unless you store the data somewhere el
 2) JELLYVECS.belly_loadvec
 This is a generator that outputs two dimentional vectors in batches of a specific size. If you would like to load more than one vector at a time use this function. Any number of vectors can be loaded. DEAULT: 100
 
+
+Future routines such as random vector access will be implemented. 
 ```python
 for vec in jellyvec.belly_loadvec(1000):
         print(vec.shape)
