@@ -92,8 +92,9 @@ header | 26 bytes
 4 bytes (int) | The next 4 bytes encode the spaced kmer length.
 3 zero bytes | After the spaced kmer length, an additional 3 bytes are set to 0.
 4 bytes (int) | The next 4 bytes encode the kmer length.
-3 zero bytes | After the kmer length, an additional 3 bytes are set to 0.
-5 bytes (5 chars) | The header ends in 5 bytes set to the values 5,4,3,2,1 respectively.
+2 zero bytes | After the kmer length, an additional 2 bytes are set to 0.
+1 byte (char) | The output type: scaled(0) or raw(1) is coded in the value of this byte.
+5 bytes (5 chars) | The header ends in 5 bytes set to the values 74,69,76,76,89 respectively.
 
 After the header. You will find the vector values followed by a tail.
 

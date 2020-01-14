@@ -116,7 +116,7 @@ int belly_jellyinit(jellydata *jdata, jellyopts opts, FILE *smer_file)
     if (opts.binout) {
         jdata->output = fopen(opts.outputfilename, "wb");
         if (!belly_checkfile(jdata->output)) return 0;
-        if (!belly_ofileinit(jdata)) {
+        if (!belly_ofileinit(jdata, (char)(opts.raw))) {
             fprintf(stderr, "\tERROR: Failed to initialize output file.\n");
             return 0;
         }
@@ -477,7 +477,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
     }
 
     if (opts.binout) {
-        if (!belly_ofiletail(jdata->output, &n)) {
+        if (!belly_ofiletail(jdata->output, &n, opts)) {
             fprintf(stderr, "\tERROR: Failed to finish output file.\n");
             return 0;
         }
@@ -485,7 +485,7 @@ unsigned long belly_extract_spaces(kseq_t *seq,
 
     //Log info
     fprintf(stderr, "\tINFO: Finished vectorizing sequence data.\n");
-    fprintf(stderr,"\t\t%lu total reads.\n",n);
+    fprintf(stderr,"\t\t%lu total sequences.\n",n);
     fprintf(stderr, "\t\t%lu total kmers\n", total_kmers);
     fprintf(stderr, "\t\t%lu total bases\n", total_seq);
     exit:
@@ -656,17 +656,18 @@ int belly_checkfile(FILE *fp)
 }
 
 
-int belly_ofileinit(jellydata *jdata)
+int belly_ofileinit(jellydata *jdata, char raw)
 {
     char *head_start[] = {0,0,0,0,0,0,0};
     char *spacer[] = {0,0,0};
-    char tail[] = {5,4,3,2,1};
+    char tail[] = {74,69,76,76,89};
     int bytenum = 0;
     bytenum += fwrite(head_start, 1, 7, jdata->output);
     bytenum += fwrite(&(jdata->smerlength), sizeof(int), 1, jdata->output);
     bytenum += fwrite(spacer, 1, 3, jdata->output);
     bytenum += fwrite(&(jdata->kmerlength), sizeof(int), 1, jdata->output);
-    bytenum += fwrite(spacer, 1, 3, jdata->output);
+    bytenum += fwrite(spacer, 1, 2, jdata->output);
+    bytenum += fwrite(&raw, 1, 1, jdata->output);
     bytenum += fwrite(&tail, 1, 5, jdata->output);
     if (bytenum != 20) {
         return 0;
@@ -675,13 +676,15 @@ int belly_ofileinit(jellydata *jdata)
 }
 
 
-int belly_ofiletail(FILE *fp, unsigned long int *n)
+int belly_ofiletail(FILE *fp, unsigned long int *n, jellyopts opts)
 {
     char *spacer[] = {0,0,0,0};
     char tail[] = {0,0,0,0,1};
     int bytenum = 0;
+    unsigned long int s = 1;
     bytenum += fwrite(spacer, 1, 4, fp);
-    bytenum += fwrite(n, sizeof(unsigned long int), 1, fp);
+    if (opts.gmode) bytenum += fwrite(&s, sizeof(unsigned long int), 1, fp);
+    else bytenum += fwrite(n, sizeof(unsigned long int), 1, fp);
     bytenum += fwrite(&tail, 1, 5, fp);
     if (bytenum != 10) {
         return 0;

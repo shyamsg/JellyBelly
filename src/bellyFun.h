@@ -191,9 +191,9 @@ int belly_dump(jellydata *jdata, jellyopts opts, unsigned long int v_idx, unsign
 
 int belly_checkfile(FILE *fp);
 
-int belly_ofileinit(jellydata *jdata);
+int belly_ofileinit(jellydata *jdata, char raw);
 
-int belly_ofiletail(FILE *fp, unsigned long int *n);
+int belly_ofiletail(FILE *fp, unsigned long int *n, jellyopts opts);
 
 int belly_writescale(jellydata *jdata, unsigned long nsamples);
 
