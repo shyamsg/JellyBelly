@@ -104,6 +104,7 @@ tail | 17 bytes
 8 bytes (long)  | Number of samples in the current file.
 5 bytes (5 chars) | The tail end in 5 bytes set to the values 66,69,76,76,89 respectively.
 
+Check [python](https://github.com/7PintsOfCherryGarcia/JellyBelly/tree/master/python) for detailed instructions on how to load JellyBelly's output vectors into numpy arrays for downstream analysis.
 
 ## Genome mode  
   If you are running JellyBelly on assembled contigs or reference genomes. Every sequence in a fasta file will be encoded into a spaced kmer vector. If you want a set of sequences to be encoded into a single vector make sure to use the -l flag (genome mode).
