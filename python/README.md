@@ -25,7 +25,7 @@ Next, instatiate a JELLYVECS class with the path to the binfile you want to mani
 jellyvec = JELLYVECS("binfilename")
 ```
 
-Is successfull, no errors should be raised.
+If successfull, no errors should be raised.
 
 Instances of JELLYVECS have a couple of variables and methods: 
 
@@ -60,10 +60,11 @@ Vectors can be accessed in only one order unless you store the data somewhere el
 2) JELLYVECS.belly_loadvec
 This is a generator that outputs two dimentional vectors in batches of a specific size. If you would like to load more than one vector at a time use this function. Any number of vectors can be loaded. DEAULT: 100
 
-
-Future routines such as random vector access will be implemented. 
 ```python
 for vec in jellyvec.belly_loadvec(1000):
         print(vec.shape)
         #Do some work with these vectors
 ```
+
+
+Future routines such as random vector access will be implemented. 
