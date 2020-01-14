@@ -679,7 +679,7 @@ int belly_ofileinit(jellydata *jdata, char raw)
 int belly_ofiletail(FILE *fp, unsigned long int *n, jellyopts opts)
 {
     char *spacer[] = {0,0,0,0};
-    char tail[] = {0,0,0,0,1};
+    char tail[] = {66,69,76,76,89};
     int bytenum = 0;
     unsigned long int s = 1;
     bytenum += fwrite(spacer, 1, 4, fp);

@@ -102,7 +102,7 @@ tail | 17 bytes
 ------------ | --------
 4 zero bytes | After vector data, 4 zero bytes are written.
 8 bytes (long)  | Number of samples in the current file.
-5 bytes (5 chars) | The tail end in 5 bytes set to the values 0,0,0,0,1 respectively.
+5 bytes (5 chars) | The tail end in 5 bytes set to the values 66,69,76,76,89 respectively.
 
 
 ## Genome mode  
