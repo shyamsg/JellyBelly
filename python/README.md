@@ -1,6 +1,6 @@
 # JellyBelly's python routines
 
-Here you will find python scripts that load and manipulate JellyBelly's output for downstream analysis. In [example](www.example.com) you will find a complete pipeline from sequencing reads to plots.
+Here you will find python scripts that load and manipulate JellyBelly's output for downstream analysis. In [example](https://www.example.com) you will find a complete pipeline from sequencing reads to plots.
   
 ### Dependencies
 
