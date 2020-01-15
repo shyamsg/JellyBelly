@@ -1,10 +1,14 @@
-# JellyBelly's python routines
+# JellyBelly's python scripts and routines
 
 Here you will find python scripts that load and manipulate JellyBelly's output for downstream analysis. In [example](https://www.example.com) you will find a complete pipeline from sequencing reads to plots.
   
 ### Dependencies
 
-These scripts assume python 3.4 or later. In addition to the other python dependencies shown in the main README.
+  python scripts require plotly, numpy, colorlover and sklearn. These can be installed with:
+  
+    pip install plotly numpy colorlover sklearn
+
+
 
 # Loading JellyBelly's binary files into numpy arrays
 
@@ -48,7 +52,7 @@ Methods:
 There are two ways to manipulate JellyBelly's vectors. With JELLYVECS.belly_loopvec and with JELLYVECS.belly_loadvec
 
 1) JELLYVECS.belly_loopvec
-This is a generator that outputs a one dimentional vector per iteration.
+This is a generator that outputs a one dimensional vector per iteration.
 
 ```python
 for vec in jellyvec.belly_loopvec():
