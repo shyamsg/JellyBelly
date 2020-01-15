@@ -61,10 +61,7 @@
 # Usage
 
 ## Input Data
-  JellyBelly can be executed on any type of DNA nucleotide data in the FASTA/FASTQ format. There is only **one** thing to consider. If you are runing JellyBelly on **sequencing reads**, make shure to set the **-C** flag (not yet implemented). This will have a two fold efect:
-  
-  1. The entire sequencing library will be encoded in a single spaced kmer vector.
-  1. Only lexicographically smallest kmers will be computed. Reads coming from random fragments can be from either the forward or reverse strand.
+  JellyBelly can be executed on any type of DNA nucleotide data in the FASTA/FASTQ format. In addition a "spaced kmer file" (explained later) is also needed. 
   
   For example:
   
@@ -72,9 +69,11 @@
     
     JellyBelly -f my_seq.fq.gz -s SpacedKmer_K10_S5.bin > output.txt
 
-output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts (number of spaced kmers) depends on the length of the number of ones in the spaced kmer mask and is equal to 4^S where S is the the number of ones in the mask.
+output.txt will be a tab separated text file with a count between 0 and 1 inclusive for each spaced kmer. The number of counts (number of spaced kmers) depends on the ones in the spaced kmer mask and is equal to 4^S where S is the the number of ones in the mask.
+
+## Output Data
   
-  JellyBelly's output values are scaled spaced kmer counts ranging from 0 to 1 includisve. Spaced kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
+  JellyBelly's output values are scaled spaced kmer counts ranging from 0 to 1. Spaced kmer count values are sorted lexicographcally eg. first value corresponds to AAA..A second to AAA..T and so on.
   
   output.txt
   
@@ -82,9 +81,10 @@ output.txt will be a tab separated text file with a count between 0 and 1 inclus
     
     0.245	0.014	0.547	...    0.436
 
-## Output Data
-  JellyBelly writes its output to either stdout (default) or to a file indicated in the -o option. Data is written in text format as previously described. You can set the -b (binary output) option to make JellyBelly write the output vectors in binary form. This will make the output file much smaller.
-  If the -b option is set. JellyBelly will write additional information to the output file. This additional information consists in a header and a tail following this format:
+
+  JellyBelly writes its output to either stdout (default) or to a file indicated by the -o option. Vectors are written row wise (one vector per row) and each vector corresponds to each input sequence in the same order. If the -l(genome mode) flag is set, only a sinlge vector is written as output.
+  
+  You can set the -b (binary output) option to make JellyBelly write the output vectors in binary form. This will make the output file much smaller. If the -b option is set. JellyBelly will write additional information to the output file. This additional information consists of a header and a tail following this format:
 
 header | 26 bytes
 ------------ | --------
@@ -131,35 +131,24 @@ To create a spaced kmer file simply run create_spaces with your desired kmer siz
 	
 This will create a .bin file. This is a binary file that contains the entropic masks. This file should be used as the -s option for JellyBelly.
 
+JellyBelly uses the same mask for all input sequences.
+
 JellyBelly is hardcoded to use the first mask in the .bin file as of now. Options will be added to make this costumizable.
 
-# Utilities
+# Other tools
 
-utility name | function
+tool location | function
 ------------ | --------
 python/compute_EUdist.py | Given two spaced kmer vectors, computes the eucledian distance between them
 python/create_PCAplot.py | Given a set of spaced kmer vectors and sample infomation, computes a PCA and plots a projection into the first two compionents
 python/create_UMAPplot.py| Given a set of spaced kmer vectors and sample information, computes a UMAP transformation and plots the first two axes
 build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euclidean distances and prints an nxn matrix with n being the number of vectors provided. The diagonal is filled with zeroes.
 
-## Instalation
-
-  python scripts come as is.
-  build/distMatrix is built together with JellyBelly but can be recompiled with
-    
-    make distMatrix
+Check [python](https://github.com/7PintsOfCherryGarcia/JellyBelly/tree/master/python) for more information.
     
 ## Run
 
-  Run these utilities without parameters to print help messages
-  
-## Dependencies
-
-  python scripts require plotly, numpy, colorlover and sklearn. These can be installed with:
-  
-    pip install plotly numpy colorlover sklearn
-
-  These scripts create html files that you can open and interact with in a web browser.
+  Run these tools without parameters to print help messages
 
 
 # Upcoming changes
