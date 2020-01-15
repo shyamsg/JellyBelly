@@ -135,6 +135,14 @@ JellyBelly uses the same mask for all input sequences.
 
 JellyBelly is hardcoded to use the first mask in the .bin file as of now. Options will be added to make this costumizable.
 
+# Memory management
+
+JellyBelly is designed to have a low system memory footprint. For most use cases JellyBelly can run on your average computer. 4Gb of system memory can handle most use cases. There are 2 main aspects that affect memory consumption: spaced kmer size and the buffer size (-q flag). 
+
+As the lenght of the spaced kmer increases so does the memory required for the hash table and the output buffer except these grows exponentially. More specifically, given a spaced kmer size of length S, 4^S sequences must be stored plus the additional space needed for the hash table.
+
+The buffer size controls how many sequences are vectorized before writing the output to disk. If you don;t have much memory in your computer, try to keep this parameter low.
+
 # Other tools
 
 tool location | function
