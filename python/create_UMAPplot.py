@@ -1,11 +1,12 @@
 ###############################################################################
-# Julian Regalado - julian.regalado@tuebingen.mpg.de
-# PCA on a matrix
+# Julian Regalado
+# UMAP on a matrix
 #
-# Create PCA plot of an input matrix of dimensions (nxm) == (samplesxfeatures)
+# Create UMAP plot of an input matrix of dimensions (nxm) == (samplesxfeatures)
 ###############################################################################
 import sys
-#from sklearn.decomposition import PCA
+import getopt
+
 import umap
 from plotly.offline import plot
 import plotly.graph_objs as go
@@ -115,10 +116,38 @@ def parseInfo(sampleFile):
     return info
 
 
+def readopts(optstr):
+    try:
+        opts, args = getopt.getopt(optstr, "f:s:h", ["help"])
+    except getopt.GetoptError as err:
+        # print help information and exit:
+        print(err)  # will print something like "option -a not recognized"
+        sys.exit(-1)
+    inputfile = None
+    samplefile = None
+    for o, a in opts:
+        if o == "-f":
+            inputfile = ("inputfile",a)
+        elif o in ("-h", "--help"):
+            print("USAGE")
+            sys.exit(-1)
+        elif o == "-s":
+            samplefile = ("samplefile",a)
+        else:
+            assert False, "unhandled option"
+
+    if inputfile is None or samplefile is None:
+        print("ERROR none")
+        sys.exit(-1)
+    return inputfile, samplefile
+
+
 def main():
-    if len(sys.argv) < 3:
-        sys.stderr.write("Not enough parameters\n")
-        sys.exit(1)
+    print("RUNNING")
+    opts = readopts(sys.argv[1:])
+    print(dict(opts))
+    sys.exit(-1)
+
     matrixfile = sys.stdin
     samplefile = open(sys.argv[1],'r')
     lableby = int(sys.argv[2])
