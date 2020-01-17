@@ -45,7 +45,6 @@ def prepareScatter(model,
                    projection,
                    sample_info,
                    labelby,
-                   outprefix,
                    components=components):
     """
     Prepares a plotly instance for figure output. A scatterplot will be created
@@ -156,12 +155,13 @@ def usage():
     sys.stderr.write("\t-n <int>\tNumber of samples in input file to load. "\
                      "(Default: -1 - all)\n")
     sys.stderr.write("\n\t-d <int>\tNumber of dimention UMAP should output. (Default: 10)\n")
+    sys.stderr.write("\n\t-o <name>\tBasename for output files. (Default: UMAP)\n")
     sys.stderr.write("\n")
 
 
 def readopts(optstr):
     try:
-        opts, args = getopt.getopt(optstr, "f:s:c:n:d:h", ["help"])
+        opts, args = getopt.getopt(optstr, "f:s:c:n:d:o:h", ["help"])
     except getopt.GetoptError as err:
         # print help information and exit:
         sys.stderr.write("ERROR:\n\t" + str(err) + "\n")
@@ -172,6 +172,7 @@ def readopts(optstr):
     columnnumber = None
     numsamples = ("numsamples", -1)
     dims = ("dims", 10)
+    output = ("output", "UMAP")
     for o, a in opts:
         if o == "-f":
             inputfile = ("inputfile",a)
@@ -195,6 +196,8 @@ def readopts(optstr):
             except ValueError as err:
                 sys.stderr.write(str(err) + "\n")
                 sys.exit(-1)
+        elif o == "-o":
+            output = ("output", a)
         elif o in ("-h", "--help"):
             usage()
             sys.exit(-1)
@@ -205,7 +208,7 @@ def readopts(optstr):
         print("ERROR:\n\tPlease specify valid parameters for -f, -s, and -c\n")
         usage()
         sys.exit(-1)
-    return inputfile, samplefile, columnnumber, numsamples, dims
+    return inputfile, samplefile, columnnumber, numsamples, dims, output
 
 
 def jellyload(filename, mode = "bin"):
@@ -229,7 +232,7 @@ def loadmatrix(opts):
 
 def displayopts(opts):
     sys.stdout.write("Runing JellyBellyUMAP.py\n")
-    for key in ["inputfile", "samplefile", "column", "numsamples", "dims"]:
+    for key in ["inputfile", "samplefile", "column", "numsamples", "dims", "output"]:
         if key == "inputfile":
             sys.stderr.write("\t" + "-f " + opts[key] + "\n")
         if key == "samplefile":
@@ -240,6 +243,8 @@ def displayopts(opts):
             sys.stderr.write("\t" + "-n " + str(opts[key]) + "\n")
         if key == "dims":
             sys.stderr.write("\t" + "-d " + str(opts[key]) + "\n")
+        if key == "output":
+            sys.stderr.write("\t" + "-o " + opts[key] + "\n")
 
 
 def main():
@@ -247,6 +252,9 @@ def main():
         assert sys.version_info >= (3, 6)
     except AssertionError:
         sys.stderr.write("PLEASE USE python >= 3.6\n")
+        sys.exit(-1)
+    if len(sys.argv) == 1:
+        usage()
         sys.exit(-1)
     opts = readopts(sys.argv[1:])
     opts = dict(opts)
@@ -270,10 +278,9 @@ def main():
     fig = prepareScatter(model,
                          projection,
                          sample_info,
-                         labelby,
-                         "UMAPout")
+                         labelby)
     from plotly.offline import plot
-    plot(fig, filename="UMAPout.html", auto_open=False, image='svg',
+    plot(fig, filename= opts["output"] + ".html", auto_open=False, image='svg',
          image_width=1600, image_height=1600, output_type='file')
 
 
