@@ -75,13 +75,12 @@ def belly_readtail(fp):
         if i != 0:
             belly_tailerr(fp)
 
-    numsamples = int.from_bytes(tail[4:8], byteorder=sys.byteorder, signed=False)
+    numsamples = int.from_bytes(tail[4:12], byteorder=sys.byteorder, signed=False)
 
-    for i in tail[8:12]:
-        if i != 0:
+    signature = [66,69,76,76,89]
+    for i in range(0,5):
+        if tail[12:][i] != signature[i]:
             belly_tailerr(fp)
-    if tail[-1] != 1:
-        belly_tailerr(fp)
 
     sys.stderr.write("INFO:\t" + str(numsamples) + " sample(s) in jellyfile.\n")
     return numsamples
@@ -105,6 +104,7 @@ def belly_usage():
 
 class JELLYVECS:
     def __init__(self, filename):
+        sys.stderr.write("<<<<>>>>\n")
         try:
             self.fp = open(filename, "rb")
             self.setvars()
@@ -112,8 +112,9 @@ class JELLYVECS:
         except:
             sys.stderr.write("ERROR: Could not open input file: " + filename +  " \n")
             self.errflag = True
+        sys.stderr.write("<<<<>>>>\n")
         if self.errflag:
-            raise
+            raise Exception
 
 
     def setvars(self):
@@ -133,6 +134,8 @@ class JELLYVECS:
         self.fp.seek(0,2)
         vecdatacap = self.fp.tell() - 26 - 17
         totalvecs = int(vecdatacap / (self.veclength*4))
+        if numsamples == -1:
+            numsamples = totalvecs
         numcycles = float(vecdatacap/(numsamples*self.veclength*4))
         if numcycles < 1.0:
             numcycles = 1
