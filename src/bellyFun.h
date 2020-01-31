@@ -195,6 +195,6 @@ int belly_ofileinit(jellydata *jdata, char raw);
 
 int belly_ofiletail(FILE *fp, unsigned long int *n, jellyopts opts);
 
-int belly_writescale(jellydata *jdata, unsigned long nsamples);
+void belly_writescale(jellydata *jdata, unsigned long nsamples);
 
-int belly_writeraw(jellydata *jdata, unsigned long nsamples);
+void belly_writeraw(jellydata *jdata, unsigned long nsamples);
