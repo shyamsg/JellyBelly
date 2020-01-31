@@ -48,7 +48,8 @@ void readVec(char *line, sampleVec *sample, int numVars) {
 
 double dist(double *vec1, double *vec2, int len) {
   double S = 0;
-  for(int i = 0; i < len; i++) {
+  int i;
+  for(i = 0; i < len; i++) {
     S += (vec1[i] - vec2[i])*(vec1[i] - vec2[i]);
   }
   return(sqrt(S));
@@ -88,8 +89,10 @@ int main(int argc, char *argv[]) {
   }
   double S;
   //Naive printing
-  for(int i = 0; i < numSamples; i++){
-    for(int j = 0; j < numSamples; j++) {
+  int i;
+  int j;
+  for(i = 0; i < numSamples; i++){
+    for(j = 0; j < numSamples; j++) {
       S = dist(samples[i].vec, samples[j].vec, numVars);
       printf("%f",S);
       if(j == (numSamples - 1)) {

@@ -39,6 +39,7 @@ int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
 {
     fprintf(stderr, "Running JellyBelly.\n");
     srand(time(NULL));
+    kseq_t *seq = NULL;
     int ret;
     //Initialize JellyBelly's data structures
     jellydata jdata;
@@ -59,7 +60,7 @@ int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
     }
 
     //Open sequence file
-    kseq_t *seq;
+    
     seq = kseq_init(fp);
     if (!seq) {
         fprintf(stderr,"\tERROR: Could not open sequence file.\n");
@@ -73,6 +74,7 @@ int belly_start(gzFile fp, FILE *smer_file, jellyopts opts)
       goto exit;
     }
     ret = 1;
+    
     exit:
       belly_exit(fp, seq, smerhash, &jdata, smerlist);
       return ret;
@@ -693,7 +695,7 @@ int belly_ofiletail(FILE *fp, unsigned long int *n, jellyopts opts)
 }
 
 
-int belly_writescale(jellydata *jdata, unsigned long nsamples)
+void belly_writescale(jellydata *jdata, unsigned long nsamples)
 {
     size_t idx = 0;
     for (size_t i = 0; i < nsamples; i++) {
@@ -707,7 +709,7 @@ int belly_writescale(jellydata *jdata, unsigned long nsamples)
 }
 
 
-int belly_writeraw(jellydata *jdata, unsigned long nsamples)
+void belly_writeraw(jellydata *jdata, unsigned long nsamples)
 {
     size_t idx = 0;
     for (size_t i = 0; i < nsamples; i++) {

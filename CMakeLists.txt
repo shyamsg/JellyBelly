@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.5)
 set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_C_FLAGS "-Wall -O3 ${CMAKE_C_FLAGS}")
+set(CMAKE_C_FLAGS "-Wall -O3 -std=c11 ${CMAKE_C_FLAGS}")
 project (JellyBelly)
 
 # add the binary tree to the search path for include files
