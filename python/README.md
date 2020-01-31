@@ -69,11 +69,11 @@ for vec in jellyvec.belly_loadvec(1000):
 
 Future routines such as random vector access will be implemented. 
 
-## Run
+# Run
 
   Run these utilities without parameters to print help messages
   
-## Dependencies
+# Dependencies
 
   python scripts require plotly, numpy, colorlover, umap and sklearn. These can be installed with:
   
