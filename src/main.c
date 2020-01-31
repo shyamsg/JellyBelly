@@ -35,6 +35,7 @@ JetBelly - Extract and bin kmers from fasta sequences of fastq sequencing files
 #include <string.h>
 #include <unistd.h>
 #include <poll.h>
+#include <getopt.h>
 #include "main.h"
 
 
