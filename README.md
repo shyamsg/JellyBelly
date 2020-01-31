@@ -149,17 +149,6 @@ build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euc
     
     make distMatrix
     
-## Run
-
-  Run these utilities without parameters to print help messages
-  
-## Dependencies
-
-  python scripts require plotly, numpy, colorlover, umap and sklearn. These can be installed with:
-  
-    pip install plotly numpy colorlover sklearn umap
-
-  These scripts create html files that you can open and interact with in a web browser.
 
 
 # Upcoming changes
