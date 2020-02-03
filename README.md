@@ -154,9 +154,6 @@ build/distMatrix | Given a set of spaced kmer vecotrs, computes all pairwise euc
 
 Check [python](https://github.com/7PintsOfCherryGarcia/JellyBelly/tree/master/python) for more information.
     
-## Run
-
-  Run these tools without parameters to print help messages
 
 
 # Upcoming changes

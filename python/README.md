@@ -2,13 +2,15 @@
 
 Here you will find python scripts that load and manipulate JellyBelly's output for downstream analysis. In [example](https://www.example.com) you will find a complete pipeline from sequencing reads to plots.
   
-### Dependencies
+## Dependencies
 
-  python scripts require plotly, numpy, colorlover and sklearn. These can be installed with:
+These scripts assume python 3.4 or later
+
+python scripts require plotly, numpy, colorlover, umap and sklearn. These can be installed with:
   
-    pip install plotly numpy colorlover sklearn
+    pip install plotly numpy colorlover sklearn umap
 
-
+  These scripts create html files that you can open and interact with in a web browser.
 
 # Loading JellyBelly's binary files into numpy arrays
 
@@ -72,3 +74,9 @@ for vec in jellyvec.belly_loadvec(1000):
 
 
 Future routines such as random vector access will be implemented. 
+
+# Run
+
+  Run these utilities without parameters to print help messages
+  
+
