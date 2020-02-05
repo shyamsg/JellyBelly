@@ -14,3 +14,4 @@ tmp
 spaces/*.bin
 python/__pycache__
 python/*.bin
+testing

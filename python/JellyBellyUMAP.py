@@ -54,13 +54,15 @@ def prepareScatter(model,
         https://plot.ly/ipython-notebooks/principal-component-analysis/
         with minor modifications to adapt for a specific format
     """
-    
+
     import plotly.graph_objs as go
     import numpy as np
     import colorlover as cl
     traces = []
     labels = np.array([i[labelby] for i in sample_info])
-    sampleNames = np.array([i[0] for i in sample_info])
+    #nameIDX is the index of the column in sample_file used for naming datapoints
+    nameIDX = 0
+    sampleNames = np.array([i[nameIDX] for i in sample_info])
 
     xp = projection[:, components[0]]
     yp = projection[:, components[1]]
